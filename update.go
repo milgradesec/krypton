@@ -9,31 +9,34 @@ import (
 
 func update() {
 	if isUpdateAvailable() {
+		log.Println("Hay nueva versión disponible")
+
 		path := "C:\\Program Files\\Krypton\\Updates\\Krypton.exe"
-		err := downloadToFile("https://paesacybersecurity.eu/krypton/Krypton.exe", path)
+		url := "https://paesacybersecurity.eu/krypton/Krypton.exe"
+		err := downloadToFile(url, path)
 		if err != nil {
-			log.Println("Error al descargar actualizacion")
-		} else {
-			log.Println("Actualizacion descargada correctamente")
-			cmd := exec.Command(path, "--install")
-			err = cmd.Start()
+			log.Fatal("Error al descargar actualización")
 		}
+		log.Println("Actualización descargada correctamente")
+		cmd := exec.Command(path, "--install")
+		err = cmd.Start()
+
+	} else {
+		log.Println("No hay nueva versión disponible")
 	}
+
 }
 
 func isUpdateAvailable() bool {
 	resp, err := http.Get("https://paesacybersecurity.eu/krypton/krypton.version")
 	if err != nil {
-		log.Println("Error al comprobar si hay nueva version")
 		return false
 	}
-	newVersion, err := ioutil.ReadAll(resp.Body)
-	resp.Body.Close()
+	defer resp.Body.Close()
 
+	newVersion, err := ioutil.ReadAll(resp.Body)
 	if string(newVersion) == version {
-		log.Println("Krypton esta actualizado")
 		return false
 	}
-	log.Println("Hay nueva version disponible")
 	return true
 }
