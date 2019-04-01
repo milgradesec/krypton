@@ -14,18 +14,17 @@ func update() {
 		err := downloadToFile(url, path)
 		if err != nil {
 			log.Println("Error al descargar actualizacion")
-			return
+		} else {
+			log.Println("Actualizacion descargada correctamente")
+			cmd := exec.Command(path, "--install")
+			err = cmd.Start()
 		}
-		log.Println("Actualizacion descargada correctamente")
-
-		cmd := exec.Command(path, "--install")
-		err = cmd.Start()
 	}
 }
 
 func isUpdateAvailable() bool {
 	resp, err := http.Get("https://paesacybersecurity.eu/krypton/krypton.version")
-	if err != nil {
+	if err != nil || resp.StatusCode != 200 {
 		log.Println("Error al comprobar si hay nueva version")
 		return false
 	}
