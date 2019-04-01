@@ -10,8 +10,7 @@ import (
 func update() {
 	if isUpdateAvailable() {
 		path := "C:\\Program Files\\Krypton\\Updates\\Krypton.exe"
-		url := "https://paesacybersecurity.eu/krypton/Krypton.exe"
-		err := downloadToFile(url, path)
+		err := downloadToFile("https://paesacybersecurity.eu/krypton/Krypton.exe", path)
 		if err != nil {
 			log.Println("Error al descargar actualizacion")
 		} else {
