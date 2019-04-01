@@ -32,7 +32,7 @@ func update() {
 
 // Comprueba si hay una nueva versión de Krypton disponible
 // comparando su versión con la que contiene el archivo krypton.version
-// descargado del servidor
+// descargado del servidor de actualizaciones
 func isUpdateAvailable() bool {
 	resp, err := http.Get("https://paesacybersecurity.eu/krypton/krypton.version")
 	if err != nil {
