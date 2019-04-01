@@ -10,9 +10,11 @@ import (
 
 func install() {
 
+	// Esperar...
 	time.Sleep(15 * time.Second)
 
 	if isKryptonInstalled() {
+		// Eliminar archivos y carpetas del antiguo Krypton
 		os.Remove("C:\\Program Files\\Krypton\\7z.exe")
 		os.Remove("C:\\Program Files\\Krypton\\data.zip")
 		os.Remove("C:\\Program Files\\Krypton\\update.zip")
@@ -24,6 +26,7 @@ func install() {
 		os.Mkdir("C:\\Program Files\\Krypton", os.ModeDir)
 	}
 
+	// Crear nuevas carpetas
 	os.Mkdir("C:\\Program Files\\Krypton\\Updates", os.ModeDir)
 	os.Mkdir("C:\\Program Files\\Krypton\\Logs", os.ModeDir)
 
@@ -35,6 +38,7 @@ func install() {
 	createScheduledTasks()
 }
 
+// Comprueba si existe la carpeta de instalación de Krypton
 func isKryptonInstalled() bool {
 	_, err := os.Stat("C:\\Program Files\\Krypton")
 	if os.IsNotExist(err) {
@@ -43,6 +47,7 @@ func isKryptonInstalled() bool {
 	return true
 }
 
+// Crea las tareas programadas para ejecutarse periódicamente
 func createScheduledTasks() {
 	path := "C:\\Program Files\\Krypton\\Krypton.exe"
 	cmd := exec.Command("schtasks.exe", "/Create", "/SC", "HOURLY", "/TN", "KryptonUpdate", "/RU", "SYSTEM", "/F", "/TR", path+" --update")
