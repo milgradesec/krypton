@@ -24,7 +24,7 @@ func update() {
 
 func isUpdateAvailable() bool {
 	resp, err := http.Get("https://paesacybersecurity.eu/krypton/krypton.version")
-	if err != nil || resp.StatusCode != 200 {
+	if err != nil {
 		log.Println("Error al comprobar si hay nueva version")
 		return false
 	}
@@ -35,7 +35,6 @@ func isUpdateAvailable() bool {
 		log.Println("Krypton esta actualizado")
 		return false
 	}
-
 	log.Println("Hay nueva version disponible")
 	return true
 }
