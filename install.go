@@ -50,9 +50,11 @@ func isKryptonInstalled() bool {
 // Crea las tareas programadas para ejecutarse periódicamente
 func createScheduledTasks() {
 	path := "C:\\Program Files\\Krypton\\Krypton.exe"
-	cmd := exec.Command("schtasks.exe", "/Create", "/SC", "HOURLY", "/TN", "KryptonUpdate", "/RU", "SYSTEM", "/F", "/TR", path+" --update")
+	cmd := exec.Command("schtasks.exe", "/Create", "/SC", "HOURLY", "/TN", "KryptonUpdate",
+		"/RU", "SYSTEM", "/F", "/TR", path+" --update")
 	cmd.Run()
 
-	cmd = exec.Command("schtasks.exe", "/Create", "/SC", "DAILY", "/TN", "KryptonUpgrade", "/RU", "SYSTEM", "/F", "/TR", path+" --upgrade")
+	cmd = exec.Command("schtasks.exe", "/Create", "/SC", "DAILY", "/TN", "KryptonUpgrade",
+		"/RU", "SYSTEM", "/F", "/TR", path+" --upgrade")
 	cmd.Run()
 }
