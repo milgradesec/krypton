@@ -37,10 +37,10 @@ type UpdateChannels struct {
 
 func loadChannelsInfo() *UpdateChannels {
 	c := UpdateChannels{}
-	c.updateChannel = getCurrentUpdateChannel()
-	c.configChanel = getCurrentConfigChannel()
+	url := "https://paesacybersecurity.eu/krypton/"
 	var dir string
 
+	c.updateChannel = getCurrentUpdateChannel()
 	switch c.updateChannel {
 	case UpdateChannelStable:
 		dir = "stable"
@@ -49,17 +49,18 @@ func loadChannelsInfo() *UpdateChannels {
 	case UpdateChannelDev:
 		dir = "dev"
 	}
-	c.updateVersionURL = "https://paesacybersecurity.eu/krypton/" + dir + "/krypton.version"
-	c.updateURL = "https://paesacybersecurity.eu/krypton/" + dir + "/Krypton.exe"
+	c.updateVersionURL = url + dir + "/krypton.version"
+	c.updateURL = url + dir + "/Krypton.exe"
 
+	c.configChanel = getCurrentConfigChannel()
 	switch c.configChanel {
 	case ConfigChannelStable:
 		dir = "config/stable"
 	case ConfigChannelTest:
 		dir = "config/test"
 	}
-	c.configurationURL = "https://paesacybersecurity.eu/krypton/" + dir + "/config.zip"
-	c.exploitMitigationsURL = "https://paesacybersecurity.eu/krypton/" + dir + "/Settings.xml"
+	c.configurationURL = url + dir + "/config.zip"
+	c.exploitMitigationsURL = url + dir + "/Settings.xml"
 	return &c
 }
 
