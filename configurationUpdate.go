@@ -9,7 +9,7 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
-func updateConfiguration(force bool) {
+func updateConfiguration(Force bool) {
 
 	// Always update exploit mitigations
 	updateExploitMitigations()
@@ -21,7 +21,7 @@ func updateConfiguration(force bool) {
 		log.Println("Error al descargar la configuracion de seguridad")
 		log.Fatal(err)
 	}
-	if force == false {
+	if !Force {
 		newHash := getFileHash(path)
 		oldHash := getUpdateHash()
 		if newHash == oldHash {
