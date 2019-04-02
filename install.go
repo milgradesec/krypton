@@ -21,7 +21,6 @@ func install() {
 		os.Remove("C:\\Program Files\\Krypton\\Settings.xml")
 		os.RemoveAll("C:\\Program Files\\Krypton\\data")
 		os.RemoveAll("C:\\Program Files\\Krypton\\update")
-		registry.DeleteKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton")
 	} else {
 		os.Mkdir("C:\\Program Files\\Krypton", os.ModeDir)
 	}
