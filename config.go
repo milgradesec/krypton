@@ -85,6 +85,20 @@ func getWindowsVersion() string {
 	return buildNumber
 }
 
+func getLastUpdateWindowsVersion() string {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.QUERY_VALUE)
+	if err != nil {
+		return ""
+	}
+	defer k.Close()
+
+	buildNumber, _, err := k.GetStringValue("lastBuildNumber")
+	if err != nil {
+		return ""
+	}
+	return buildNumber
+}
+
 func updateExploitMitigations() {
 	url := "https://paesacybersecurity.eu/krypton/Settings.xml"
 	path := "C:\\Program Files\\Krypton\\Updates\\Settings.xml"
