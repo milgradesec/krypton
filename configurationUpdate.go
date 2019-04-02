@@ -31,14 +31,13 @@ func updateConfiguration(Force bool) {
 	// Si se indica --force-update hay que aplicar la configuración
 	// ignorando si ya se aplicó anteriormente
 	if !Force {
-		newHash := getFileHash(path)
-		oldHash := getUpdateHash()
-		if newHash == oldHash {
+		configUpdateHash := getFileHash(path)
+		if configUpdateHash == getLastUpdateHash() {
 			log.Println("No hay cambios de configuracion")
 			os.Exit(0)
 		}
 		log.Println("Hay nueva configuracion disponible")
-		setUpdateHash(newHash)
+		setLastUpdateHash(configUpdateHash)
 	}
 
 	os.RemoveAll("C:\\Program Files\\Krypton\\Updates\\config")
@@ -56,7 +55,7 @@ func updateConfiguration(Force bool) {
 	}
 }
 
-func getUpdateHash() string {
+func getLastUpdateHash() string {
 	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.QUERY_VALUE)
 	if err != nil {
 		return ""
@@ -70,7 +69,7 @@ func getUpdateHash() string {
 	return hash
 }
 
-func setUpdateHash(hash string) {
+func setLastUpdateHash(hash string) {
 	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.ALL_ACCESS)
 	if err != nil {
 		log.Fatal(err)
