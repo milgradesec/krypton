@@ -16,7 +16,7 @@ func updateConfiguration(Force bool) {
 	updateExploitMitigations()
 
 	path := "C:/Program Files/Krypton/Updates/config.zip"
-	currentChannel := loadChannelsInfo()
+	currentChannel := loadCurrentChannel()
 	err := downloadToFile(currentChannel.configurationURL, path)
 	if err != nil {
 		log.Fatal("Error al descargar la configuracion de seguridad")
@@ -121,7 +121,7 @@ func setLastUpdateWindowsVersion(buildNumber string) {
 
 func updateExploitMitigations() {
 	path := "C:/Program Files/Krypton/Updates/Settings.xml"
-	currentChannel := loadChannelsInfo()
+	currentChannel := loadCurrentChannel()
 	err := downloadToFile(currentChannel.exploitMitigationsURL, path)
 	if err != nil {
 		log.Println("Error al descargar la configuracion contra exploits")

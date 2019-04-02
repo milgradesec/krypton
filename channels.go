@@ -35,7 +35,7 @@ type UpdateChannels struct {
 	exploitMitigationsURL string
 }
 
-func loadChannelsInfo() *UpdateChannels {
+func loadCurrentChannel() *UpdateChannels {
 	c := UpdateChannels{}
 	url := "https://paesacybersecurity.eu/krypton/"
 	var dir string
