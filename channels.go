@@ -25,10 +25,12 @@ const (
 )
 
 // UpdateChannels almacena los valores de los canales de actualización
-// de Krypton y la configuración
+// de Krypton y la configuración de cada uno
 type UpdateChannels struct {
-	updateChannel int
-	configChanel  int
+	updateChannel    int
+	configChanel     int
+	updateURL        string
+	configurationURL string
 }
 
 func (c *UpdateChannels) loadUpdateChannels() {
