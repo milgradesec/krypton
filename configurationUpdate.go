@@ -18,8 +18,11 @@ func updateConfiguration(Force bool) {
 	currentChannel := loadChannelsInfo()
 	err := downloadToFile(currentChannel.configurationURL, path)
 	if err != nil {
-		log.Println("Error al descargar la configuracion de seguridad")
-		log.Fatal(err)
+		log.Fatal("Error al descargar la configuracion de seguridad")
+	}
+	if getWindowsVersion() != getLastUpdateWindowsVersion() {
+		setLastUpdateWindowsVersion(getWindowsVersion())
+		Force = true
 	}
 	if !Force {
 		newHash := getFileHash(path)
@@ -29,7 +32,7 @@ func updateConfiguration(Force bool) {
 			os.Exit(0)
 		}
 		log.Println("Hay nueva configuracion disponible")
-		saveUpdateHash(newHash)
+		setUpdateHash(newHash)
 	}
 
 	os.RemoveAll("C:\\Program Files\\Krypton\\Updates\\config")
@@ -61,7 +64,7 @@ func getUpdateHash() string {
 	return hash
 }
 
-func saveUpdateHash(hash string) {
+func setUpdateHash(hash string) {
 	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.ALL_ACCESS)
 	if err != nil {
 		log.Fatal(err)
@@ -97,6 +100,16 @@ func getLastUpdateWindowsVersion() string {
 		return ""
 	}
 	return buildNumber
+}
+
+func setLastUpdateWindowsVersion(buildNumber string) {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.ALL_ACCESS)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer k.Close()
+
+	k.SetStringValue("lastBuildNumber", buildNumber)
 }
 
 func updateExploitMitigations() {

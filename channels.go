@@ -55,7 +55,7 @@ func getCurrentUpdateChannel() int {
 
 	channel, _, err := k.GetIntegerValue("updateChannel")
 	if err != nil {
-		// Si no se especifica ninguno se utiliza en estable
+		// Si no se especifica ninguno se utiliza el estable
 		return UpdateChannelStable
 	}
 	return int(channel)
@@ -70,7 +70,7 @@ func getCurrentConfigChannel() int {
 
 	channel, _, err := k.GetIntegerValue("configChannel")
 	if err != nil {
-		// Si no se especifica ninguno se utiliza en estable
+		// Si no se especifica ninguno se utiliza el estable
 		return ConfigChannelStable
 	}
 	return int(channel)
