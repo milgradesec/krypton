@@ -38,17 +38,17 @@ func updateConfiguration(force bool) {
 		log.Fatal(err)
 	}
 
-	files, err := ioutil.ReadDir("C:\\Program Files\\Krypton\\Updates\\config")
+	files, err := ioutil.ReadDir("C:/Program Files/Krypton/Updates/config")
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, f := range files {
-		runPowershellScript("./"+f.Name(), "C:\\Program Files\\Krypton\\Updates\\config")
+		runPowershellScript("./"+f.Name(), "C:/Program Files/Krypton/Updates/config")
 	}
 }
 
 func getUpdateHash() string {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.ALL_ACCESS)
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.QUERY_VALUE)
 	if err != nil {
 		return ""
 	}
@@ -69,6 +69,20 @@ func saveUpdateHash(hash string) {
 	defer k.Close()
 
 	k.SetStringValue("lastUpdateHash", hash)
+}
+
+func getWindowsVersion() string {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", registry.QUERY_VALUE)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer k.Close()
+
+	buildNumber, _, err := k.GetStringValue("CurrentBuildNumber")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return buildNumber
 }
 
 func updateExploitMitigations() {
