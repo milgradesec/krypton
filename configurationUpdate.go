@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 
 	"golang.org/x/sys/windows/registry"
 )
@@ -51,7 +52,9 @@ func updateConfiguration(Force bool) {
 		log.Fatal(err)
 	}
 	for _, f := range files {
-		runPowershellScript("./"+f.Name(), "C:/Program Files/Krypton/Updates/config")
+		if strings.HasSuffix(f.Name(), ".ps1") {
+			runPowershellScript("./"+f.Name(), "C:/Program Files/Krypton/Updates/config")
+		}
 	}
 }
 
