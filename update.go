@@ -34,7 +34,8 @@ func update() {
 // comparando su versión con la que contiene el archivo krypton.version
 // descargado del servidor de actualizaciones
 func isUpdateAvailable() bool {
-	resp, err := http.Get("https://paesacybersecurity.eu/krypton/krypton.version")
+	currentChannel := loadChannelsInfo()
+	resp, err := http.Get(currentChannel.updateVersionURL)
 	if err != nil {
 		return false
 	}

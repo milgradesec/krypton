@@ -29,13 +29,19 @@ const (
 type UpdateChannels struct {
 	updateChannel    int
 	configChanel     int
+	updateVersionURL string
 	updateURL        string
 	configurationURL string
 }
 
-func (c *UpdateChannels) loadUpdateChannels() {
+func loadChannelsInfo() *UpdateChannels {
+	c := UpdateChannels{}
 	c.updateChannel = getCurrentUpdateChannel()
 	c.configChanel = getCurrentConfigChannel()
+	c.updateVersionURL = "https://paesacybersecurity.eu/krypton/krypton.version"
+	c.updateURL = "https://paesacybersecurity.eu/krypton/Krypton.exe"
+	c.configurationURL = "https://paesacybersecurity.eu/krypton/config.zip"
+	return &c
 }
 
 func getCurrentUpdateChannel() int {
