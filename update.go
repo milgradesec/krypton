@@ -14,8 +14,8 @@ func update() {
 		log.Println("Hay nueva versión disponible")
 
 		path := "C:/Program Files/Krypton/Updates/Krypton.exe"
-		url := "https://paesacybersecurity.eu/krypton/Krypton.exe"
-		err := downloadToFile(url, path)
+		currentChannel := loadChannelsInfo()
+		err := downloadToFile(currentChannel.updateURL, path)
 		if err != nil {
 			log.Fatal("Error al descargar actualización")
 		}

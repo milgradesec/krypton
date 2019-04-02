@@ -14,9 +14,9 @@ func updateConfiguration(force bool) {
 	// Always update exploit mitigations
 	updateExploitMitigations()
 
-	url := "https://paesacybersecurity.eu/krypton/config.zip"
 	path := "C:/Program Files/Krypton/Updates/config.zip"
-	err := downloadToFile(url, path)
+	currentChannel := loadChannelsInfo()
+	err := downloadToFile(currentChannel.configurationURL, path)
 	if err != nil {
 		log.Println("Error al descargar la configuracion de seguridad")
 		log.Fatal(err)
