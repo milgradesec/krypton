@@ -6,7 +6,7 @@
         {
             "label": "Compilar",
             "type": "shell",
-            "command": "go build -ldflags -s",
+            "command": "$Env:GOOS = 'windows'; $Env:GOARCH = '386; go build -ldflags -s",
             "group": {
                 "kind": "build",
                 "isDefault": true

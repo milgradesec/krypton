@@ -39,10 +39,27 @@ func loadChannelsInfo() *UpdateChannels {
 	c := UpdateChannels{}
 	c.updateChannel = getCurrentUpdateChannel()
 	c.configChanel = getCurrentConfigChannel()
-	c.updateVersionURL = "https://paesacybersecurity.eu/krypton/krypton.version"
-	c.updateURL = "https://paesacybersecurity.eu/krypton/Krypton.exe"
-	c.configurationURL = "https://paesacybersecurity.eu/krypton/config.zip"
-	c.exploitMitigationsURL = "https://paesacybersecurity.eu/krypton/Settings.xml"
+	var dir string
+
+	switch c.updateChannel {
+	case UpdateChannelStable:
+		dir = "stable"
+	case UpdateChannelBeta:
+		dir = "beta"
+	case UpdateChannelDev:
+		dir = "dev"
+	}
+	c.updateVersionURL = "https://paesacybersecurity.eu/krypton/" + dir + "/krypton.version"
+	c.updateURL = "https://paesacybersecurity.eu/krypton/" + dir + "/Krypton.exe"
+
+	switch c.configChanel {
+	case ConfigChannelStable:
+		dir = "config/stable"
+	case ConfigChannelTest:
+		dir = "config/test"
+	}
+	c.configurationURL = "https://paesacybersecurity.eu/krypton/" + dir + "/config.zip"
+	c.exploitMitigationsURL = "https://paesacybersecurity.eu/krypton/" + dir + "/Settings.xml"
 	return &c
 }
 
