@@ -41,6 +41,7 @@ func updateConfiguration(Force bool) {
 		setLastUpdateHash(configUpdateHash)
 	}
 
+	// Descomprimir configuración
 	os.RemoveAll("C:\\Program Files\\Krypton\\Updates\\config")
 	err = unzip(path, "C:\\Program Files\\Krypton\\Updates")
 	if err != nil {
@@ -78,7 +79,6 @@ func setLastUpdateHash(hash string) {
 		log.Fatal(err)
 	}
 	defer k.Close()
-
 	k.SetStringValue("lastUpdateHash", hash)
 }
 
@@ -116,7 +116,6 @@ func setLastUpdateWindowsVersion(buildNumber string) {
 		log.Fatal(err)
 	}
 	defer k.Close()
-
 	k.SetStringValue("lastBuildNumber", buildNumber)
 }
 
