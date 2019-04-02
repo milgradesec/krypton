@@ -20,10 +20,16 @@ func updateConfiguration(Force bool) {
 	if err != nil {
 		log.Fatal("Error al descargar la configuracion de seguridad")
 	}
+
+	// Las actualizaciones semianuales de Windows modifican muchas configuraciones
+	// y hay que volver a instalar la configuración si cambia la versión de Windows
 	if getWindowsVersion() != getLastUpdateWindowsVersion() {
 		setLastUpdateWindowsVersion(getWindowsVersion())
 		Force = true
 	}
+
+	// Si se indica --force-update hay que aplicar la configuración
+	// ignorando si ya se aplicó anteriormente
 	if !Force {
 		newHash := getFileHash(path)
 		oldHash := getUpdateHash()
