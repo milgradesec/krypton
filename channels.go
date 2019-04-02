@@ -24,6 +24,18 @@ const (
 	ConfigChannelTest = 1
 )
 
+// UpdateChannels almacena los valores de los canales de actualización
+// de Krypton y la configuración
+type UpdateChannels struct {
+	updateChannel int
+	configChanel  int
+}
+
+func (c *UpdateChannels) loadUpdateChannels() {
+	c.updateChannel = getCurrentUpdateChannel()
+	c.configChanel = getCurrentConfigChannel()
+}
+
 func getCurrentUpdateChannel() int {
 	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.QUERY_VALUE)
 	if err != nil {
