@@ -100,9 +100,9 @@ func getLastUpdateWindowsVersion() string {
 }
 
 func updateExploitMitigations() {
-	url := "https://paesacybersecurity.eu/krypton/Settings.xml"
 	path := "C:/Program Files/Krypton/Updates/Settings.xml"
-	err := downloadToFile(url, path)
+	currentChannel := loadChannelsInfo()
+	err := downloadToFile(currentChannel.exploitMitigationsURL, path)
 	if err != nil {
 		log.Println("Error al descargar la configuracion contra exploits")
 		return

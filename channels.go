@@ -27,11 +27,12 @@ const (
 // UpdateChannels almacena los valores de los canales de actualización
 // de Krypton y la configuración de cada uno
 type UpdateChannels struct {
-	updateChannel    int
-	configChanel     int
-	updateVersionURL string
-	updateURL        string
-	configurationURL string
+	updateChannel         int
+	configChanel          int
+	updateVersionURL      string
+	updateURL             string
+	configurationURL      string
+	exploitMitigationsURL string
 }
 
 func loadChannelsInfo() *UpdateChannels {
@@ -41,6 +42,7 @@ func loadChannelsInfo() *UpdateChannels {
 	c.updateVersionURL = "https://paesacybersecurity.eu/krypton/krypton.version"
 	c.updateURL = "https://paesacybersecurity.eu/krypton/Krypton.exe"
 	c.configurationURL = "https://paesacybersecurity.eu/krypton/config.zip"
+	c.exploitMitigationsURL = "https://paesacybersecurity.eu/krypton/Settings.xml"
 	return &c
 }
 
