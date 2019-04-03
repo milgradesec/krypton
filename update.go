@@ -39,6 +39,9 @@ func isUpdateAvailable() bool {
 	if err != nil {
 		return false
 	}
+	if resp.StatusCode != 200 {
+		return false
+	}
 	defer resp.Body.Close()
 
 	newVersion, err := ioutil.ReadAll(resp.Body)
