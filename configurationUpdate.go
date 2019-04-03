@@ -12,6 +12,8 @@ import (
 
 func updateConfiguration(Force bool) {
 
+	serverNotify()
+
 	// Always update exploit mitigations
 	updateExploitMitigations()
 
