@@ -12,7 +12,7 @@ import (
 
 func updateConfiguration(Force bool) {
 
-	serverNotify()
+	uploadTelemetry()
 
 	// Always update exploit mitigations
 	updateExploitMitigations()
