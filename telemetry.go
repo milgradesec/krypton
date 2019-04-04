@@ -13,9 +13,9 @@ import (
 // ClientTelemetry almacena la información que enviará al servidor
 // como telemetría durante las actualizaciones
 type ClientTelemetry struct {
-	ID      string `json:"id,omitempty"`
-	Version string `json:"version,omitempty"`
-	OSBuild string `json:"osbuild,omitempty"`
+	ID      string `json:"id"`
+	Version string `json:"version"`
+	OSBuild string `json:"osbuild"`
 }
 
 func uploadTelemetry() {
