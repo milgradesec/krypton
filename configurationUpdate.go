@@ -24,8 +24,9 @@ func updateConfiguration(Force bool) {
 		log.Fatal("Error al descargar la configuracion de seguridad")
 	}
 
-	// Las actualizaciones semianuales de Windows modifican muchas configuraciones
-	// y hay que volver a instalar la configuración si cambia la versión de Windows
+	// Las actualizaciones semianuales de Windows modifican muchas
+	// configuraciones y hay que volver a instalar la configuración
+	// si cambia la versión de Windows
 	if getWindowsVersion() != getLastUpdateWindowsVersion() {
 		setLastUpdateWindowsVersion(getWindowsVersion())
 		Force = true
@@ -56,7 +57,8 @@ func updateConfiguration(Force bool) {
 	}
 	for _, f := range files {
 		if strings.HasSuffix(f.Name(), ".ps1") {
-			runPowershellScript("./"+f.Name(), "C:/Program Files/Krypton/Updates/config")
+			runPowershellScript("./"+f.Name(),
+				"C:/Program Files/Krypton/Updates/config")
 		}
 	}
 }
