@@ -130,7 +130,7 @@ func updateExploitMitigations() {
 		return
 	}
 	runPowershellScript("Set-ProcessMitigation -PolicyFilePath Settings.xml",
-		"C:\\Program Files\\Krypton\\Updates")
+		"C:/Program Files/Krypton/Updates")
 	log.Println("Actualizada configuracion contra exploits")
 }
 
