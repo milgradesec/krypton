@@ -21,8 +21,8 @@ type ClientTelemetry struct {
 func uploadTelemetry() {
 	c := ClientTelemetry{
 		ID:      getID(),
-		OSBuild: getWindowsVersion(),
 		Version: version,
+		OSBuild: getWindowsVersion(),
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(c)
