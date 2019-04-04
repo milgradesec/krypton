@@ -15,6 +15,7 @@ import (
 type Client struct {
 	ID      string `json:"id,omitempty"`
 	Version string `json:"version,omitempty"`
+	OSBuild string `json:"osbuild,omitempty"`
 }
 
 func createNewID() string {
@@ -45,7 +46,7 @@ func getID() string {
 }
 
 func serverNotify() {
-	c := Client{ID: getID(), Version: version}
+	c := Client{ID: getID(), OSBuild: getWindowsVersion(), Version: version}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(c)
 	_, err := http.Post("https://paesacybersecurity.eu/api/telemetry/new", "application/json", b)
