@@ -99,7 +99,8 @@ func unzip(src string, dest string) error {
 			os.MkdirAll(fpath, f.Mode())
 		} else {
 			var fdir string
-			if lastIndex := strings.LastIndex(fpath, string(os.PathSeparator)); lastIndex > -1 {
+			if lastIndex := strings.LastIndex(fpath,
+				string(os.PathSeparator)); lastIndex > -1 {
 				fdir = fpath[:lastIndex]
 			}
 

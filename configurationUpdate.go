@@ -62,7 +62,8 @@ func updateConfiguration(Force bool) {
 }
 
 func getLastUpdateHash() string {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.QUERY_VALUE)
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+		"SOFTWARE\\Krypton", registry.QUERY_VALUE)
 	if err != nil {
 		return ""
 	}
@@ -76,7 +77,8 @@ func getLastUpdateHash() string {
 }
 
 func setLastUpdateHash(hash string) {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.ALL_ACCESS)
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+		"SOFTWARE\\Krypton", registry.ALL_ACCESS)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -85,7 +87,8 @@ func setLastUpdateHash(hash string) {
 }
 
 func getWindowsVersion() string {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", registry.QUERY_VALUE)
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", registry.QUERY_VALUE)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -99,7 +102,8 @@ func getWindowsVersion() string {
 }
 
 func getLastUpdateWindowsVersion() string {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.QUERY_VALUE)
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+		"SOFTWARE\\Krypton", registry.QUERY_VALUE)
 	if err != nil {
 		return ""
 	}
@@ -113,7 +117,8 @@ func getLastUpdateWindowsVersion() string {
 }
 
 func setLastUpdateWindowsVersion(buildNumber string) {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.ALL_ACCESS)
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+		"SOFTWARE\\Krypton", registry.ALL_ACCESS)
 	if err != nil {
 		log.Fatal(err)
 	}

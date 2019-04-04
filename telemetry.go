@@ -27,14 +27,16 @@ func uploadTelemetry() {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(c)
 
-	_, err := http.Post("https://paesacybersecurity.eu/api/telemetry/new", "application/json", b)
+	_, err := http.Post("https://paesacybersecurity.eu/api/telemetry/new",
+		"application/json", b)
 	if err != nil {
 		log.Println(err)
 	}
 }
 
 func createNewID() string {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.ALL_ACCESS)
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+		"SOFTWARE\\Krypton", registry.ALL_ACCESS)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -47,7 +49,8 @@ func createNewID() string {
 }
 
 func getID() string {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.QUERY_VALUE)
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+		"SOFTWARE\\Krypton", registry.QUERY_VALUE)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -65,7 +65,8 @@ func loadCurrentChannel() *UpdateChannels {
 }
 
 func getCurrentUpdateChannel() int {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.QUERY_VALUE)
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+		"SOFTWARE\\Krypton", registry.QUERY_VALUE)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -80,7 +81,8 @@ func getCurrentUpdateChannel() int {
 }
 
 func getCurrentConfigChannel() int {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE, "SOFTWARE\\Krypton", registry.QUERY_VALUE)
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+		"SOFTWARE\\Krypton", registry.QUERY_VALUE)
 	if err != nil {
 		log.Fatal(err)
 	}
