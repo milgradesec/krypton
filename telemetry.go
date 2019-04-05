@@ -19,7 +19,7 @@ type ClientTelemetry struct {
 	OSBuild string `json:"osbuild"`
 }
 
-// UploadTelemetry envía la información de telemetría almacenada en ClientTelemetry
+// UploadTelemetry envía la información de telemetría al servidor
 func UploadTelemetry() {
 	c := ClientTelemetry{
 		ID:      GetComputerID(),
