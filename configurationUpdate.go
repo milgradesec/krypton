@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
+	"unsafe"
 
 	"golang.org/x/sys/windows/registry"
 )
@@ -132,6 +134,28 @@ func getLastUpdateWindowsVersion() string {
 	return buildNumber
 }
 
+func isWoW64() bool {
+	dll, err := syscall.LoadDLL("kernel32.dll")
+	if err != nil {
+		log.Fatal("Error al cargar kernel32")
+	}
+	defer dll.Release()
+
+	proc, err := dll.FindProc("IsWow64Process")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	handle, err := syscall.GetCurrentProcess()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var result bool
+	_, _, _ = proc.Call(uintptr(handle), uintptr(unsafe.Pointer(&result)))
+	return result
+}
+
 func setLastUpdateWindowsVersion(buildNumber string) {
 	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
 		"SOFTWARE\\Krypton", registry.ALL_ACCESS)
@@ -156,7 +180,13 @@ func updateExploitMitigations() {
 }
 
 func runPowershellScript(flags string, workingDir string) {
-	cmd := exec.Command("powershell.exe", "-ExecutionPolicy", "Bypass", flags)
+	var powershellPath string
+	if isWoW64() {
+		powershellPath = "c:/windows/sysnative/WindowsPowerShell/v1.0/powershell.exe"
+	} else {
+		powershellPath = "powershell.exe"
+	}
+	cmd := exec.Command(powershellPath, "-ExecutionPolicy", "Bypass", flags)
 	cmd.Dir = workingDir
 	cmd.Start()
 }
