@@ -6,10 +6,23 @@
         {
             "label": "Compilar",
             "type": "shell",
-            "command": "$Env:GOOS = 'windows'; $Env:GOARCH = '386; go build -ldflags -s",
+            "command": "./.vscode/build.ps1",
             "group": {
                 "kind": "build",
                 "isDefault": true
+            }
+        },
+        {
+            "label": "Ejecutar tests",
+            "type": "shell",
+            "command": "go test -v",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
             }
         }
     ]
