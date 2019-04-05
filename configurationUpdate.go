@@ -11,7 +11,6 @@ import (
 )
 
 func updateConfiguration(Force bool) {
-
 	uploadTelemetry()
 
 	// Always update exploit mitigations

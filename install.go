@@ -36,6 +36,7 @@ func install() {
 	registry.CreateKey(registry.LOCAL_MACHINE,
 		"SOFTWARE\\Krypton", registry.ALL_ACCESS)
 	createScheduledTasks()
+	uploadTelemetry()
 }
 
 // Comprueba si existe la carpeta de instalación de Krypton
