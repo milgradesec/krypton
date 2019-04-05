@@ -15,7 +15,7 @@ func update() {
 		log.Println("Hay nueva versión disponible")
 
 		path := "C:/Program Files/Krypton/Updates/Krypton.exe"
-		currentChannel := loadCurrentChannel()
+		currentChannel := LoadCurrentChannel()
 		err := downloadToFile(currentChannel.updateURL, path)
 		if err != nil {
 			log.Fatal("Error al descargar actualización")
@@ -35,7 +35,7 @@ func update() {
 // comparando su versión con la que contiene el archivo krypton.version
 // descargado del servidor de actualizaciones
 func isUpdateAvailable() bool {
-	currentChannel := loadCurrentChannel()
+	currentChannel := LoadCurrentChannel()
 	resp, err := http.Get(currentChannel.updateVersionURL)
 	if err != nil {
 		return false

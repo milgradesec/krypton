@@ -24,9 +24,9 @@ const (
 	ConfigChannelTest = 1
 )
 
-// UpdateChannels almacena los valores de los canales de actualización
+// UpdateChannel almacena los valores de los canales de actualización
 // de Krypton y la configuración de cada uno
-type UpdateChannels struct {
+type UpdateChannel struct {
 	updateChannel         int
 	configChanel          int
 	updateVersionURL      string
@@ -35,8 +35,10 @@ type UpdateChannels struct {
 	exploitMitigationsURL string
 }
 
-func loadCurrentChannel() *UpdateChannels {
-	c := UpdateChannels{}
+// LoadCurrentChannel crea y rellena UpdateChannel con la información
+// correspondiente al canal actual
+func LoadCurrentChannel() *UpdateChannel {
+	c := UpdateChannel{}
 	url := "https://paesacybersecurity.eu/krypton/"
 	var dir string
 
