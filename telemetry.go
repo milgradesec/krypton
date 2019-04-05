@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/google/uuid"
 	"golang.org/x/sys/windows/registry"
@@ -22,7 +23,7 @@ func uploadTelemetry() {
 	c := ClientTelemetry{
 		ID:      getID(),
 		Version: version,
-		OSBuild: getWindowsVersion(),
+		OSBuild: getWindowsVersion() + "." + strconv.FormatUint(getWindowsPatchNumber(), 10),
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(c)

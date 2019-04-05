@@ -103,6 +103,21 @@ func getWindowsVersion() string {
 	return buildNumber
 }
 
+func getWindowsPatchNumber() uint64 {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", registry.QUERY_VALUE)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer k.Close()
+
+	patchNumber, _, err := k.GetIntegerValue("UBR")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return patchNumber
+}
+
 func getLastUpdateWindowsVersion() string {
 	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
 		"SOFTWARE\\Krypton", registry.QUERY_VALUE)
