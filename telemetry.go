@@ -19,9 +19,10 @@ type ClientTelemetry struct {
 	OSBuild string `json:"osbuild"`
 }
 
-func uploadTelemetry() {
+// UploadTelemetry envía la información de telemetría almacenada en ClientTelemetry
+func UploadTelemetry() {
 	c := ClientTelemetry{
-		ID:      getID(),
+		ID:      GetComputerID(),
 		Version: version,
 		OSBuild: getWindowsVersion() + "." + strconv.FormatUint(getWindowsPatchNumber(), 10),
 	}
@@ -35,31 +36,33 @@ func uploadTelemetry() {
 	}
 }
 
-func createNewID() string {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+// CreateNewID genera un Identificador Único y lo guarda en el registro
+func CreateNewID() string {
+	key, err := registry.OpenKey(registry.LOCAL_MACHINE,
 		"SOFTWARE\\Krypton", registry.ALL_ACCESS)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer k.Close()
+	defer key.Close()
 
 	id := uuid.New()
 	idString := id.String()
-	k.SetStringValue("uuid", idString)
+	key.SetStringValue("uuid", idString)
 	return idString
 }
 
-func getID() string {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+// GetComputerID devuelve el ID almacenado en el registro
+func GetComputerID() string {
+	key, err := registry.OpenKey(registry.LOCAL_MACHINE,
 		"SOFTWARE\\Krypton", registry.QUERY_VALUE)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer k.Close()
+	defer key.Close()
 
-	id, _, err := k.GetStringValue("uuid")
+	id, _, err := key.GetStringValue("uuid")
 	if err != nil {
-		return createNewID()
+		return CreateNewID()
 	}
 	return id
 }
