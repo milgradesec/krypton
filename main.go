@@ -10,7 +10,6 @@ const (
 )
 
 func main() {
-	uploadTelemetry()
 	parseCommandLine()
 }
 
