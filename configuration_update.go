@@ -194,15 +194,4 @@ func runPowershellScript(flags string, workingDir string) {
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
-
-	if err := cmd.Wait(); err != nil {
-		if exiterr, ok := err.(*exec.ExitError); ok {
-			if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
-				if status.ExitStatus() != 0 {
-					//notifyErrorInUpdate(status,stdout,stderr)
-				}
-				log.Printf("Exit Status: %d", status.ExitStatus())
-			}
-		}
-	}
 }
