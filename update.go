@@ -10,7 +10,6 @@ import (
 // Actualiza Krypton a la versión mas reciente disponible
 // en el servidor de actualizaciones
 func update() {
-	UploadTelemetry()
 	if isUpdateAvailable() {
 		log.Println("Hay nueva versión disponible")
 
