@@ -15,23 +15,24 @@ import (
 	"strings"
 )
 
-func copyFile(src string, dest string) {
+func copyFile(src string, dest string) error {
 	sourceFile, err := os.Open(src)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer sourceFile.Close()
 
 	newFile, err := os.Create(dest)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer newFile.Close()
 
 	_, err = io.Copy(newFile, sourceFile)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
 
 func getFileHash(fileName string) string {

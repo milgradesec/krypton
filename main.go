@@ -1,48 +1,39 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"os"
 )
 
 const (
 	version = "0.4.2"
 )
 
+var (
+	installFlag     = flag.Bool("install", false, "Instala Krypton en el sistema")
+	updateFlag      = flag.Bool("update", false, "Actualiza la configuración de seguridad si hay cambios")
+	forceUpdateFlag = flag.Bool("force-update", false, "Actualiza la configuración de seguridad")
+	upgradeFlag     = flag.Bool("upgrade", false, "Actualiza Krypton a la ultima versión")
+	helpFlag        = flag.Bool("help", false, "Muestra los comandos disponibles")
+)
+
 func main() {
-	parseCommandLine()
-}
-
-func showHelp() {
-	fmt.Println("")
 	fmt.Println("Krypton " + version + "  --  Security Configuration Updater")
-	fmt.Println("")
-	fmt.Println("Uso: Krypton <comando>")
-	fmt.Println("")
-	fmt.Println("Comandos:")
-	fmt.Println("	--help, -h")
-	fmt.Println("	--install")
-	fmt.Println("	--update")
-	fmt.Println("	--force-update")
-	fmt.Println("	--upgrade")
-}
+	flag.Parse()
+	if *installFlag {
+		err := installKrypton()
+		if err != nil {
+			fmt.Printf("Error instalando: %v\n", err)
+		}
+	} else if *updateFlag {
 
-func parseCommandLine() {
-	args := os.Args
-	if len(args) == 1 {
-		showHelp()
-	} else if args[1] == "-h" || args[1] == "--help" {
-		showHelp()
-	} else if args[1] == "-i" || args[1] == "--install" {
-		install()
-	} else if args[1] == "--update" {
-		updateConfiguration(false)
-	} else if args[1] == "--force-update" {
-		updateConfiguration(true)
-	} else if args[1] == "--upgrade" {
-		update()
+	} else if *forceUpdateFlag {
+
+	} else if *upgradeFlag {
+
+	} else if *helpFlag {
+		flag.PrintDefaults()
 	} else {
-		showHelp()
-		fmt.Printf("Error: comando no válido: %s", args[1])
+		flag.PrintDefaults()
 	}
 }
