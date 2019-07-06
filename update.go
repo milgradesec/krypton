@@ -7,10 +7,30 @@ import (
 	"os/exec"
 )
 
-// Actualiza Krypton a la versión mas reciente disponible
-// en el servidor de actualizaciones
+func newVersionAvailable() bool {
+	currentChannel := loadCurrentChannel()
+	resp, err := http.Get(currentChannel.updateVersionURL)
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return false
+	}
+
+	newVersion, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return false
+	}
+	if string(newVersion) == version {
+		return false
+	}
+	return true
+}
+
 func update() {
-	if isUpdateAvailable() {
+	if newVersionAvailable() {
 		log.Println("Hay nueva versión disponible")
 
 		path := "C:/Program Files/Krypton/Updates/Krypton.exe"
@@ -28,25 +48,4 @@ func update() {
 		log.Println("No hay nueva versión disponible")
 	}
 
-}
-
-// Comprueba si hay una nueva versión de Krypton disponible
-// comparando su versión con la que contiene el archivo krypton.version
-// descargado del servidor de actualizaciones
-func isUpdateAvailable() bool {
-	currentChannel := loadCurrentChannel()
-	resp, err := http.Get(currentChannel.updateVersionURL)
-	if err != nil {
-		return false
-	}
-	if resp.StatusCode != 200 {
-		return false
-	}
-	defer resp.Body.Close()
-
-	newVersion, err := ioutil.ReadAll(resp.Body)
-	if string(newVersion) == version {
-		return false
-	}
-	return true
 }
