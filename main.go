@@ -30,6 +30,10 @@ func main() {
 	} else if *forceUpdateFlag {
 
 	} else if *upgradeFlag {
+		err := update()
+		if err != nil {
+			fmt.Printf("Error actualizando: %v\n", err)
+		}
 
 	} else if *helpFlag {
 		flag.PrintDefaults()
