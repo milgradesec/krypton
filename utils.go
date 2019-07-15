@@ -5,7 +5,6 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -35,7 +34,7 @@ func copyFile(src string, dest string) error {
 	return nil
 }
 
-func getFileHash(fileName string) string {
+func computeFileSHA1(fileName string) string {
 	file, err := os.Open(fileName)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -46,7 +45,7 @@ func getFileHash(fileName string) string {
 
 	content, err := ioutil.ReadAll(file)
 	if err != nil {
-		fmt.Print(err)
+		return ""
 	}
 
 	hash := sha1.New()
@@ -54,7 +53,7 @@ func getFileHash(fileName string) string {
 	return hex.EncodeToString(hash.Sum(nil))
 }
 
-func getContentHash(content []byte) string {
+func computeContentSHA1(content []byte) string {
 	hash := sha1.New()
 	hash.Write(content)
 	return hex.EncodeToString(hash.Sum(nil))
@@ -65,7 +64,7 @@ func downloadToFile(url string, path string) error {
 	if err != nil {
 		return err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return errors.New("status != 200")
 	}
 	data, err := ioutil.ReadAll(resp.Body)

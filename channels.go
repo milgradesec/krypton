@@ -6,31 +6,18 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
-// Canales de actualización de Krypton
 const (
-	// STABLE recibe las versiones estables (predeterminado)
-	UpdateChannelStable = 0
-	// BETA recibe las versiones en fase de pruebas
-	UpdateChannelBeta = 1
-	// DEV recibe las versiones en fase de desarrollo (inestable)
-	UpdateChannelDev = 2
-)
-
-// Canales de actualización de configuracion
-const (
-	// STABLE instala las configuraciones estables
-	ConfigChannelStable = 0
-	// TEST instala las configuraciones de prueba
-	ConfigChannelTest = 1
+	channelStable = 0
+	channelTest   = 1
 )
 
 // UpdateChannel almacena los valores de los canales de actualización
 // de Krypton y la configuración de cada uno
 type UpdateChannel struct {
-	updateVersionURL      string
-	updateURL             string
-	configurationURL      string
-	exploitMitigationsURL string
+	UpdateVersionURL      string
+	UpdateURL             string
+	ConfigurationURL      string
+	ExploitMitigationsURL string
 }
 
 func loadCurrentChannel() *UpdateChannel {
@@ -39,24 +26,22 @@ func loadCurrentChannel() *UpdateChannel {
 	var dir string
 
 	switch getCurrentUpdateChannel() {
-	case UpdateChannelStable:
+	case channelStable:
 		dir = "stable"
-	case UpdateChannelBeta:
-		dir = "beta"
-	case UpdateChannelDev:
+	case channelTest:
 		dir = "dev"
 	}
-	c.updateVersionURL = url + dir + "/krypton.version"
-	c.updateURL = url + dir + "/Krypton.exe"
+	c.UpdateVersionURL = url + dir + "/krypton.version"
+	c.UpdateURL = url + dir + "/Krypton.exe"
 
 	switch getCurrentConfigChannel() {
-	case ConfigChannelStable:
+	case channelStable:
 		dir = "config/stable"
-	case ConfigChannelTest:
+	case channelTest:
 		dir = "config/test"
 	}
-	c.configurationURL = url + dir + "/config.zip"
-	c.exploitMitigationsURL = url + dir + "/Settings.xml"
+	c.ConfigurationURL = url + dir + "/config.zip"
+	c.ExploitMitigationsURL = url + dir + "/Settings.xml"
 	return &c
 }
 
@@ -71,7 +56,7 @@ func getCurrentUpdateChannel() int {
 	channel, _, err := k.GetIntegerValue("updateChannel")
 	if err != nil {
 		// Si no se especifica ninguno se utiliza el estable
-		return UpdateChannelStable
+		return channelStable
 	}
 	return int(channel)
 }
@@ -87,7 +72,7 @@ func getCurrentConfigChannel() int {
 	channel, _, err := k.GetIntegerValue("configChannel")
 	if err != nil {
 		// Si no se especifica ninguno se utiliza el estable
-		return ConfigChannelStable
+		return channelStable
 	}
 	return int(channel)
 }

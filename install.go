@@ -10,12 +10,12 @@ import (
 )
 
 const (
-	updateDelay = 5 * time.Second
-	kryptonDir  = "C:/Program Files/Krypton"
+	updateDelay      = 5 * time.Second
+	kryptonDirectory = "C:/Program Files/Krypton/"
 )
 
 func isAlreadyInstalled() bool {
-	_, err := os.Stat("C:/Program Files/Krypton")
+	_, err := os.Stat(kryptonDirectory)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return false
@@ -25,23 +25,25 @@ func isAlreadyInstalled() bool {
 }
 
 func cleanup() {
-	os.Remove(kryptonDir + "/7z.exe")
-	os.Remove(kryptonDir + "/data.zip")
-	os.Remove(kryptonDir + "/update.zip")
-	os.Remove(kryptonDir + "/Settings.xml")
-	os.RemoveAll(kryptonDir + "/data")
-	os.RemoveAll(kryptonDir + "/update")
-	os.RemoveAll(kryptonDir + "/Logs")
+	os.Remove(kryptonDirectory + "7z.exe")
+	os.Remove(kryptonDirectory + "data.zip")
+	os.Remove(kryptonDirectory + "update.zip")
+	os.Remove(kryptonDirectory + "Settings.xml")
+	os.RemoveAll(kryptonDirectory + "data")
+	os.RemoveAll(kryptonDirectory + "update")
 }
 
 func createRegistryKeys() error {
-	registry.CreateKey(registry.LOCAL_MACHINE,
-		"SOFTWARE/Krypton", registry.ALL_ACCESS)
+	_, _, err := registry.CreateKey(registry.LOCAL_MACHINE,
+		`SOFTWARE\\Krypton`, registry.ALL_ACCESS)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func createScheduledTasks() error {
-	path := kryptonDir + "/Krypton.exe"
+	path := kryptonDirectory + "/Krypton.exe"
 	cmd := exec.Command("schtasks.exe", "/Create", "/SC", "HOURLY", "/TN",
 		"KryptonUpdate", "/RU", "SYSTEM", "/F", "/TR", path+" --update")
 	err := cmd.Run()
@@ -60,11 +62,10 @@ func createScheduledTasks() error {
 
 func installKrypton() error {
 	if !isAlreadyInstalled() {
-		err := os.Mkdir(kryptonDir, os.ModeDir)
+		err := os.Mkdir(kryptonDirectory, os.ModeDir)
 		if err != nil {
 			return err
 		}
-		fmt.Println("Krypton no esta instalado.")
 	}
 	fmt.Println("Instalando...")
 
@@ -77,7 +78,7 @@ func installKrypton() error {
 	if err != nil {
 		return err
 	}
-	err = copyFile(path, kryptonDir+"/Krypton.exe")
+	err = copyFile(path, kryptonDirectory+"Krypton.exe")
 	if err != nil {
 		return err
 	}

@@ -9,7 +9,7 @@ import (
 
 func newVersionAvailable() bool {
 	currentChannel := loadCurrentChannel()
-	resp, err := http.Get(currentChannel.updateVersionURL)
+	resp, err := http.Get(currentChannel.UpdateVersionURL)
 	if err != nil {
 		return false
 	}
@@ -32,20 +32,22 @@ func newVersionAvailable() bool {
 func update() error {
 	if !newVersionAvailable() {
 		fmt.Println("No hay nueva versión disponible.")
-	} else {
-		fmt.Println("Hay nueva versión disponible.")
-		currentChannel := loadCurrentChannel()
-		path := kryptonDir + "/Updates/Krypton.exe"
-		err := downloadToFile(currentChannel.updateURL, path)
-		if err != nil {
-			return err
-		}
+		return nil
+	}
 
-		cmd := exec.Command(path, "--install")
-		err = cmd.Start()
-		if err != nil {
-			return err
-		}
+	fmt.Println("Hay nueva versión disponible.")
+	currentChannel := loadCurrentChannel()
+	path := kryptonDirectory + "Updates/Krypton.exe"
+	err := downloadToFile(currentChannel.UpdateURL, path)
+	if err != nil {
+		return err
+	}
+
+	cmd := exec.Command(path, "--install")
+	err = cmd.Start()
+	if err != nil {
+		return err
+
 	}
 	return nil
 }

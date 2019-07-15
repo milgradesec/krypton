@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -14,11 +15,16 @@ import (
 
 func updateConfiguration(Force bool) {
 	// Always update exploit mitigations
-	updateExploitMitigations()
+	err := updateExploitMitigations()
+	if err != nil {
+		fmt.Println("Error al actualizar la configuración contra exploits")
+	} else {
+		fmt.Println("Actualizada configuracion contra exploits.")
+	}
 
 	path := "C:/Program Files/Krypton/Updates/config.zip"
 	currentChannel := loadCurrentChannel()
-	err := downloadToFile(currentChannel.configurationURL, path)
+	err = downloadToFile(currentChannel.ConfigurationURL, path)
 	if err != nil {
 		log.Fatal("Error al descargar la configuracion de seguridad")
 	}
@@ -34,7 +40,7 @@ func updateConfiguration(Force bool) {
 	// Si se indica --force-update hay que aplicar la configuración
 	// ignorando si ya se aplicó anteriormente
 	if !Force {
-		configUpdateHash := getFileHash(path)
+		configUpdateHash := computeFileSHA1(path)
 		if configUpdateHash == getLastUpdateHash() {
 			log.Println("No hay cambios de configuracion")
 			os.Exit(0)
@@ -164,20 +170,22 @@ func setLastUpdateWindowsVersion(buildNumber string) {
 	k.SetStringValue("lastBuildNumber", buildNumber)
 }
 
-func updateExploitMitigations() {
+func updateExploitMitigations() error {
 	path := "C:/Program Files/Krypton/Updates/Settings.xml"
 	currentChannel := loadCurrentChannel()
-	err := downloadToFile(currentChannel.exploitMitigationsURL, path)
+	err := downloadToFile(currentChannel.ExploitMitigationsURL, path)
 	if err != nil {
-		log.Println("Error al descargar la configuracion contra exploits")
-		return
+		return err
 	}
-	runPowershellScript("Set-ProcessMitigation -PolicyFilePath Settings.xml",
+	err = runPowershellScript("Set-ProcessMitigation -PolicyFilePath Settings.xml",
 		"C:/Program Files/Krypton/Updates")
-	log.Println("Actualizada configuracion contra exploits")
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func runPowershellScript(flags string, workingDir string) {
+func runPowershellScript(flags string, workingDir string) error {
 	var powershellPath string
 	if isWoW64() {
 		powershellPath = "c:/windows/sysnative/WindowsPowerShell/v1.0/powershell.exe"
@@ -190,6 +198,7 @@ func runPowershellScript(flags string, workingDir string) {
 	}
 
 	if err := cmd.Start(); err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
