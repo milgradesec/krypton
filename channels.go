@@ -22,7 +22,7 @@ type UpdateChannel struct {
 
 func loadCurrentChannel() *UpdateChannel {
 	c := UpdateChannel{}
-	url := "https://paesacybersecurity.eu/krypton/"
+	url := "https://dl.paesacybersecurity.eu/krypton/"
 	var dir string
 
 	switch getCurrentUpdateChannel() {
