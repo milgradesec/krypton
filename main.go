@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	version = "0.4.2"
+	version = "0.5"
 )
 
 var (
@@ -26,9 +26,9 @@ func main() {
 			fmt.Printf("Error instalando: %v\n", err)
 		}
 	} else if *updateFlag {
-
+		updateConfiguration(false)
 	} else if *forceUpdateFlag {
-
+		updateConfiguration(true)
 	} else if *upgradeFlag {
 		err := update()
 		if err != nil {
