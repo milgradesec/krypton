@@ -182,6 +182,12 @@ func updateExploitMitigations() error {
 	if err != nil {
 		return err
 	}
+
+	err = runPowershellScript("Set-ProcessMitigation -PolicyFilePath Settings.xml",
+		"C:/Program Files/Krypton/Settings")
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -197,7 +203,7 @@ func runPowershellScript(flags string, workingDir string) error {
 		cmd.Dir = workingDir
 	}
 
-	if err := cmd.Start(); err != nil {
+	if err := cmd.Run(); err != nil {
 		return err
 	}
 	return nil
