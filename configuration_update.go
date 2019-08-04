@@ -17,7 +17,7 @@ func updateConfiguration(Force bool) {
 	// Always update exploit mitigations
 	err := updateExploitMitigations()
 	if err != nil {
-		fmt.Println("Error al actualizar la configuración contra exploits")
+		fmt.Printf("Error al actualizar la configuración contra exploits, %v", err)
 	} else {
 		fmt.Println("Actualizada configuracion contra exploits.")
 	}
