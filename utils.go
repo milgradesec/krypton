@@ -59,7 +59,7 @@ func computeContentSHA1(content []byte) string {
 	return hex.EncodeToString(hash.Sum(nil))
 }
 
-func downloadToFile(url string, path string) error {
+func downloadToFile(url string, file string) error {
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
@@ -70,13 +70,13 @@ func downloadToFile(url string, path string) error {
 	data, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 
-	os.Remove(path)
-	file, err := os.Create(path)
+	os.Remove(file)
+	path, err := os.Create(file)
 	if err != nil {
 		return err
 	}
-	file.Write(data)
-	file.Close()
+	path.Write(data)
+	path.Close()
 	return nil
 }
 

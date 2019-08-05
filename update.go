@@ -1,44 +1,37 @@
 package main
 
 import (
-	"fmt"
+	"errors"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os/exec"
 )
 
-func newVersionAvailable() bool {
-	currentChannel := loadCurrentChannel()
-	resp, err := http.Get(currentChannel.UpdateVersionURL)
+// update actualiza Krypton a la versión más reciente disponible en el servidor
+func update() error {
+	resp, err := http.Get("https://dl.paesacybersecurity.eu/krypton/stable/krypton.version")
 	if err != nil {
-		return false
+		return err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return false
+		return errors.New("update: response status != 200")
 	}
 
-	newVersion, err := ioutil.ReadAll(resp.Body)
+	v, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return false
+		return err
 	}
-	if string(newVersion) == version {
-		return false
-	}
-	return true
-}
-
-func update() error {
-	if !newVersionAvailable() {
-		fmt.Println("No hay nueva versión disponible.")
+	if string(v) == version {
+		log.Println("Krypton esta actualizado.")
 		return nil
 	}
 
-	fmt.Println("Hay nueva versión disponible.")
-	currentChannel := loadCurrentChannel()
-	path := kryptonDirectory + "Updates/Krypton.exe"
-	err := downloadToFile(currentChannel.UpdateURL, path)
+	url := "https://dl.paesacybersecurity.eu/krypton/stable/Krypton.exe"
+	path := "C:/Program Files/Krypton/Updates/Krypton.exe"
+	err = downloadToFile(url, path)
 	if err != nil {
 		return err
 	}
@@ -47,7 +40,6 @@ func update() error {
 	err = cmd.Start()
 	if err != nil {
 		return err
-
 	}
 	return nil
 }
