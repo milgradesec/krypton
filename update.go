@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 )
 
@@ -31,6 +32,8 @@ func update() error {
 
 	url := "https://dl.paesacybersecurity.eu/krypton/stable/Krypton.exe"
 	path := "C:/Program Files/Krypton/Updates/Krypton.exe"
+
+	os.Mkdir("C:/Program Files/Krypton/Updates", os.ModeDir)
 	err = downloadToFile(url, path)
 	if err != nil {
 		return err

@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"log"
+	"fmt"
 )
 
 const (
@@ -18,21 +18,21 @@ var (
 )
 
 func main() {
-	log.Println("Krypton " + version + "  --  Security Configuration Updater")
+	fmt.Println("Krypton " + version + "  --  Security Configuration Updater")
 	flag.Parse()
 	if *installFlag {
-		err := installKrypton()
+		err := install()
 		if err != nil {
-			log.Printf("Error instalando Krypton: %v\n", err)
+			fmt.Printf("Error instalando Krypton: %v\n", err)
 		}
 	} else if *updateFlag {
-		updateConfiguration(false)
+		updateConfig(false)
 	} else if *forceUpdateFlag {
-		updateConfiguration(true)
+		updateConfig(true)
 	} else if *upgradeFlag {
 		err := update()
 		if err != nil {
-			log.Printf("Error actualizando Krypton: %v\n", err)
+			fmt.Printf("Error actualizando Krypton: %v\n", err)
 		}
 
 	} else if *helpFlag {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"time"
@@ -9,31 +8,50 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
-const (
-	updateDelay      = 5 * time.Second
-	kryptonDirectory = "C:/Program Files/Krypton/"
-)
-
-func isAlreadyInstalled() bool {
-	_, err := os.Stat(kryptonDirectory)
+func install() error {
+	_, err := os.Stat("C:/Program Files/Krypton")
 	if err != nil {
 		if os.IsNotExist(err) {
-			return false
+			err = os.Mkdir("C:/Program Files/Krypton", os.ModeDir)
+			if err != nil {
+				return err
+			}
 		}
 	}
-	return true
+
+	time.Sleep(5 * time.Second)
+	cleanup()
+
+	exe, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	err = copyFile(exe, "C:/Program Files/Krypton/Krypton.exe")
+	if err != nil {
+		return err
+	}
+
+	err = createRegistryKey()
+	if err != nil {
+		return err
+	}
+	err = createScheduledTasks()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func cleanup() {
-	os.Remove(kryptonDirectory + "7z.exe")
-	os.Remove(kryptonDirectory + "data.zip")
-	os.Remove(kryptonDirectory + "update.zip")
-	os.Remove(kryptonDirectory + "Settings.xml")
-	os.RemoveAll(kryptonDirectory + "data")
-	os.RemoveAll(kryptonDirectory + "update")
+	os.Remove("C:/Program Files/Krypton/7z.exe")
+	os.Remove("C:/Program Files/Krypton/data.zip")
+	os.Remove("C:/Program Files/Krypton/update.zip")
+	os.Remove("C:/Program Files/Krypton/Settings.xml")
+	os.RemoveAll("C:/Program Files/Krypton/data")
+	os.RemoveAll("C:/Program Files/Krypton/update")
 }
 
-func createRegistryKeys() error {
+func createRegistryKey() error {
 	_, _, err := registry.CreateKey(registry.LOCAL_MACHINE,
 		`SOFTWARE\\Krypton`, registry.ALL_ACCESS)
 	if err != nil {
@@ -43,7 +61,7 @@ func createRegistryKeys() error {
 }
 
 func createScheduledTasks() error {
-	path := kryptonDirectory + "/Krypton.exe"
+	path := "C:/Program Files/Krypton/Krypton.exe"
 	cmd := exec.Command("schtasks.exe", "/Create", "/SC", "HOURLY", "/TN",
 		"KryptonUpdate", "/RU", "SYSTEM", "/F", "/TR", path+" --update")
 	err := cmd.Run()
@@ -57,40 +75,5 @@ func createScheduledTasks() error {
 	if err != nil {
 		return err
 	}
-	return nil
-}
-
-func installKrypton() error {
-	if !isAlreadyInstalled() {
-		err := os.Mkdir(kryptonDirectory, os.ModeDir)
-		if err != nil {
-			return err
-		}
-	}
-	fmt.Println("Instalando...")
-
-	// Esperar para evitar errores
-	time.Sleep(updateDelay)
-	cleanup()
-
-	// Mover ejecutable actual a la carpeta de instalación
-	path, err := os.Executable()
-	if err != nil {
-		return err
-	}
-	err = copyFile(path, kryptonDirectory+"Krypton.exe")
-	if err != nil {
-		return err
-	}
-
-	err = createRegistryKeys()
-	if err != nil {
-		return err
-	}
-	err = createScheduledTasks()
-	if err != nil {
-		return err
-	}
-	fmt.Println("Instalado correctamente.")
 	return nil
 }

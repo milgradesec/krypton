@@ -18,12 +18,12 @@ func Test_installKrypton(t *testing.T) {
 		t.Fatal("Hash vacío")
 	}
 
-	err = installKrypton()
+	err = install()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	hash2 := computeFileSHA1(kryptonDirectory + "Krypton.exe")
+	hash2 := computeFileSHA1("C:/Program Files/Krypton/Krypton.exe")
 	if hash2 == "" {
 		t.Fatal("Hash vacío")
 	}

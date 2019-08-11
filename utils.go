@@ -70,7 +70,11 @@ func downloadToFile(url string, file string) error {
 	data, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 
-	os.Remove(file)
+	err = os.Remove(file)
+	if err != nil {
+		return err
+	}
+
 	path, err := os.Create(file)
 	if err != nil {
 		return err

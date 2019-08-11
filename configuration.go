@@ -9,22 +9,28 @@ import (
 	"strings"
 	"syscall"
 	"unsafe"
-
-	"golang.org/x/sys/windows/registry"
 )
 
-func updateConfiguration(Force bool) {
-	// Always update exploit mitigations
+type powerShellScript struct {
+	Args       string
+	WorkingDir string
+}
+
+func (ps powerShellScript) Run() error {
+	return nil
+}
+
+func updateConfig(force bool) {
 	err := updateExploitMitigations()
 	if err != nil {
-		fmt.Printf("Error al actualizar la configuración contra exploits, %v", err)
+		fmt.Printf("Error al actualizar la configuración contra exploits, %v\n", err)
 	} else {
 		fmt.Println("Actualizada configuracion contra exploits.")
 	}
 
+	url := "https://dl.paesacybersecurity.eu/krypton/config/stable/config.zip"
 	path := "C:/Program Files/Krypton/Updates/config.zip"
-	currentChannel := loadCurrentChannel()
-	err = downloadToFile(currentChannel.ConfigurationURL, path)
+	err = downloadToFile(url, path)
 	if err != nil {
 		log.Fatal("Error al descargar la configuracion de seguridad")
 	}
@@ -34,12 +40,12 @@ func updateConfiguration(Force bool) {
 	// si cambia la versión de Windows
 	if getWindowsVersion() != getLastUpdateWindowsVersion() {
 		setLastUpdateWindowsVersion(getWindowsVersion())
-		Force = true
+		force = true
 	}
 
 	// Si se indica --force-update hay que aplicar la configuración
 	// ignorando si ya se aplicó anteriormente
-	if !Force {
+	if !force {
 		configUpdateHash := computeFileSHA1(path)
 		if configUpdateHash == getLastUpdateHash() {
 			log.Println("No hay cambios de configuracion")
@@ -62,121 +68,65 @@ func updateConfiguration(Force bool) {
 	}
 	for _, f := range files {
 		if strings.HasSuffix(f.Name(), ".ps1") {
-			runPowershellScript("./"+f.Name(),
+			err = runPowershellScript("./"+f.Name(),
 				"C:/Program Files/Krypton/Updates/config")
+			if err != nil {
+				log.Println(err)
+			}
+		}
+	}
+
+	dir, err := os.Stat("C:/Program Files/Krypton/Settings")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if dir.IsDir() {
+		files, err := ioutil.ReadDir("C:/Program Files/Krypton/Settings")
+		if err != nil {
+			log.Fatal(err)
+		}
+		for _, f := range files {
+			if strings.HasSuffix(f.Name(), ".ps1") {
+				err = runPowershellScript("./"+f.Name(),
+					"C:/Program Files/Krypton/Settings")
+				if err != nil {
+					log.Println(err)
+				}
+			}
 		}
 	}
 }
 
-func getLastUpdateHash() string {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
-		"SOFTWARE\\Krypton", registry.QUERY_VALUE)
-	if err != nil {
-		return ""
-	}
-	defer k.Close()
-
-	hash, _, err := k.GetStringValue("lastUpdateHash")
-	if err != nil {
-		return ""
-	}
-	return hash
-}
-
-func setLastUpdateHash(hash string) {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
-		"SOFTWARE\\Krypton", registry.ALL_ACCESS)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer k.Close()
-	k.SetStringValue("lastUpdateHash", hash)
-}
-
-func getWindowsVersion() string {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
-		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", registry.QUERY_VALUE)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer k.Close()
-
-	buildNumber, _, err := k.GetStringValue("CurrentBuildNumber")
-	if err != nil {
-		log.Fatal(err)
-	}
-	return buildNumber
-}
-
-func getWindowsPatchNumber() uint64 {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
-		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", registry.QUERY_VALUE)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer k.Close()
-
-	patchNumber, _, err := k.GetIntegerValue("UBR")
-	if err != nil {
-		log.Fatal(err)
-	}
-	return patchNumber
-}
-
-func getLastUpdateWindowsVersion() string {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
-		"SOFTWARE\\Krypton", registry.QUERY_VALUE)
-	if err != nil {
-		return ""
-	}
-	defer k.Close()
-
-	buildNumber, _, err := k.GetStringValue("lastBuildNumber")
-	if err != nil {
-		return ""
-	}
-	return buildNumber
-}
-
-func isWoW64() bool {
+func isWoW64() (bool, error) {
 	dll, err := syscall.LoadDLL("kernel32.dll")
 	if err != nil {
-		log.Fatal("Error al cargar kernel32")
+		return false, err
 	}
 	defer dll.Release()
 
 	proc, err := dll.FindProc("IsWow64Process")
 	if err != nil {
-		log.Fatal(err)
+		return false, err
 	}
 
 	handle, err := syscall.GetCurrentProcess()
 	if err != nil {
-		log.Fatal(err)
+		return false, err
 	}
 
 	var result bool
 	_, _, _ = proc.Call(uintptr(handle), uintptr(unsafe.Pointer(&result)))
-	return result
-}
-
-func setLastUpdateWindowsVersion(buildNumber string) {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
-		"SOFTWARE\\Krypton", registry.ALL_ACCESS)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer k.Close()
-	k.SetStringValue("lastBuildNumber", buildNumber)
+	return result, nil
 }
 
 func updateExploitMitigations() error {
-	path := "C:/Program Files/Krypton/Updates/Settings.xml"
-	currentChannel := loadCurrentChannel()
-	err := downloadToFile(currentChannel.ExploitMitigationsURL, path)
+	err := downloadToFile("https://dl.paesacybersecurity.eu/krypton/Settings.xml",
+		"C:/Program Files/Krypton/Updates/Settings.xml")
 	if err != nil {
 		return err
 	}
+
 	err = runPowershellScript("Set-ProcessMitigation -PolicyFilePath Settings.xml",
 		"C:/Program Files/Krypton/Updates")
 	if err != nil {
@@ -193,7 +143,12 @@ func updateExploitMitigations() error {
 
 func runPowershellScript(flags string, workingDir string) error {
 	var powershellPath string
-	if isWoW64() {
+	wow64, err := isWoW64()
+	if err != nil {
+		return err
+	}
+
+	if wow64 {
 		powershellPath = "c:/windows/sysnative/WindowsPowerShell/v1.0/powershell.exe"
 	} else {
 		powershellPath = "powershell.exe"
