@@ -6,7 +6,7 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "./.vscode/build.ps1",
+            "command": "./.vscode/build.cmd",
             "group": {
                 "kind": "build",
                 "isDefault": true
