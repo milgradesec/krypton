@@ -2,8 +2,8 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -26,7 +26,7 @@ func update() error {
 		return err
 	}
 	if string(v) == version {
-		log.Println("Krypton esta actualizado.")
+		fmt.Println("Krypton esta actualizado.")
 		return nil
 	}
 

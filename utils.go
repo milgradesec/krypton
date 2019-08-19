@@ -15,35 +15,35 @@ import (
 )
 
 func copyFile(src string, dest string) error {
-	sourceFile, err := os.Open(src)
+	srcFile, err := os.Open(src)
 	if err != nil {
 		return err
 	}
-	defer sourceFile.Close()
+	defer srcFile.Close()
 
-	newFile, err := os.Create(dest)
+	destFile, err := os.Create(dest)
 	if err != nil {
 		return err
 	}
-	defer newFile.Close()
+	defer destFile.Close()
 
-	_, err = io.Copy(newFile, sourceFile)
+	_, err = io.Copy(destFile, srcFile)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func computeFileSHA1(fileName string) string {
-	file, err := os.Open(fileName)
+func computeFileSHA1(file string) string {
+	f, err := os.Open(file)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return ""
 		}
 	}
-	defer file.Close()
+	defer f.Close()
 
-	content, err := ioutil.ReadAll(file)
+	content, err := ioutil.ReadAll(f)
 	if err != nil {
 		return ""
 	}
@@ -53,9 +53,9 @@ func computeFileSHA1(fileName string) string {
 	return hex.EncodeToString(hash.Sum(nil))
 }
 
-func computeContentSHA1(content []byte) string {
+func computeContentSHA1(b []byte) string {
 	hash := sha1.New()
-	hash.Write(content)
+	hash.Write(b)
 	return hex.EncodeToString(hash.Sum(nil))
 }
 
@@ -68,19 +68,26 @@ func downloadToFile(url string, file string) error {
 		return errors.New("status != 200")
 	}
 	data, err := ioutil.ReadAll(resp.Body)
-	resp.Body.Close()
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
 
 	err = os.Remove(file)
 	if err != nil {
 		return err
 	}
 
-	path, err := os.Create(file)
+	dest, err := os.Create(file)
 	if err != nil {
 		return err
 	}
-	path.Write(data)
-	path.Close()
+	defer dest.Close()
+
+	_, err = dest.Write(data)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
