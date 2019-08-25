@@ -26,9 +26,17 @@ func main() {
 			fmt.Printf("Error instalando Krypton: %v\n", err)
 		}
 	} else if *updateFlag {
-		updateConfig(false)
+		err := updateConfig(false)
+		if err != nil {
+			fmt.Printf("Error actualizando configuración: %v\n", err)
+		}
+
 	} else if *forceUpdateFlag {
-		updateConfig(true)
+		err := updateConfig(true)
+		if err != nil {
+			fmt.Printf("Error actualizando configuración: %v\n", err)
+		}
+
 	} else if *upgradeFlag {
 		err := update()
 		if err != nil {

@@ -21,6 +21,8 @@ func install() error {
 
 	time.Sleep(5 * time.Second)
 	cleanup()
+	os.Mkdir("C:/Program Files/Krypton/Settings", os.ModeDir)
+	os.Mkdir("C:/Program Files/Krypton/Updates", os.ModeDir)
 
 	exe, err := os.Executable()
 	if err != nil {

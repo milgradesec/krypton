@@ -11,16 +11,7 @@ import (
 	"unsafe"
 )
 
-type powerShellScript struct {
-	Args       string
-	WorkingDir string
-}
-
-func (ps powerShellScript) Run() error {
-	return nil
-}
-
-func updateConfig(force bool) {
+func updateConfig(force bool) error {
 	err := updateExploitMitigations()
 	if err != nil {
 		fmt.Printf("Error al actualizar la configuración contra exploits, %v\n", err)
@@ -32,7 +23,7 @@ func updateConfig(force bool) {
 	path := "C:/Program Files/Krypton/Updates/config.zip"
 	err = downloadToFile(url, path)
 	if err != nil {
-		log.Fatal("Error al descargar la configuracion de seguridad")
+		return err
 	}
 
 	// Las actualizaciones semianuales de Windows modifican muchas
@@ -59,12 +50,12 @@ func updateConfig(force bool) {
 	os.RemoveAll("C:\\Program Files\\Krypton\\Updates\\config")
 	err = unzip(path, "C:\\Program Files\\Krypton\\Updates")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	files, err := ioutil.ReadDir("C:/Program Files/Krypton/Updates/config")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	for _, f := range files {
 		if strings.HasSuffix(f.Name(), ".ps1") {
@@ -78,13 +69,16 @@ func updateConfig(force bool) {
 
 	dir, err := os.Stat("C:/Program Files/Krypton/Settings")
 	if err != nil {
-		log.Fatal(err)
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
 	}
 
 	if dir.IsDir() {
 		files, err := ioutil.ReadDir("C:/Program Files/Krypton/Settings")
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		for _, f := range files {
 			if strings.HasSuffix(f.Name(), ".ps1") {
@@ -96,6 +90,7 @@ func updateConfig(force bool) {
 			}
 		}
 	}
+	return nil
 }
 
 func isWoW64() (bool, error) {
@@ -121,7 +116,7 @@ func isWoW64() (bool, error) {
 }
 
 func updateExploitMitigations() error {
-	err := downloadToFile("https://dl.paesacybersecurity.eu/krypton/Settings.xml",
+	err := downloadToFile("https://dl.paesacybersecurity.eu/krypton/config/stable/Settings.xml",
 		"C:/Program Files/Krypton/Updates/Settings.xml")
 	if err != nil {
 		return err
@@ -133,11 +128,20 @@ func updateExploitMitigations() error {
 		return err
 	}
 
+	_, err = os.Stat("C:/Program Files/Krypton/Settings/Settings.xml")
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+
 	err = runPowershellScript("Set-ProcessMitigation -PolicyFilePath Settings.xml",
 		"C:/Program Files/Krypton/Settings")
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
