@@ -28,8 +28,10 @@ func updateConfig(force bool) error {
 	// Las actualizaciones semianuales de Windows modifican muchas
 	// configuraciones y hay que volver a instalar la configuración
 	// si cambia la versión de Windows
-	if getWindowsVersion() != getLastUpdateWindowsVersion() {
-		setLastUpdateWindowsVersion(getWindowsVersion())
+	winver := getWindowsVersion()
+	lwinver := getLastUpdateWindowsVersion()
+	if winver != lwinver {
+		setLastUpdateWindowsVersion(winver)
 		force = true
 	}
 
