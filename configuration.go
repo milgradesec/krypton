@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -39,10 +38,10 @@ func updateConfig(force bool) error {
 	if !force {
 		configUpdateHash := computeFileSHA1(path)
 		if configUpdateHash == getLastUpdateHash() {
-			log.Println("No hay cambios de configuracion")
+			fmt.Println("No hay cambios de configuracion")
 			os.Exit(0)
 		}
-		log.Println("Hay nueva configuracion disponible")
+		fmt.Println("Hay nueva configuracion disponible")
 		setLastUpdateHash(configUpdateHash)
 	}
 
@@ -62,7 +61,7 @@ func updateConfig(force bool) error {
 			err = runPowershellScript("./"+f.Name(),
 				"C:/Program Files/Krypton/Updates/config")
 			if err != nil {
-				log.Println(err)
+				fmt.Println(err)
 			}
 		}
 	}
@@ -85,7 +84,7 @@ func updateConfig(force bool) error {
 				err = runPowershellScript("./"+f.Name(),
 					"C:/Program Files/Krypton/Settings")
 				if err != nil {
-					log.Println(err)
+					fmt.Println(err)
 				}
 			}
 		}

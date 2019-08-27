@@ -73,11 +73,7 @@ func downloadToFile(url string, file string) error {
 	}
 	defer resp.Body.Close()
 
-	err = os.Remove(file)
-	if err != nil {
-		return err
-	}
-
+	os.Remove(file)
 	dest, err := os.Create(file)
 	if err != nil {
 		return err
