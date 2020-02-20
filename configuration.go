@@ -18,7 +18,7 @@ func updateConfig(force bool) error {
 		fmt.Println("Actualizada configuracion contra exploits.")
 	}
 
-	url := "https://dl.paesacybersecurity.eu/krypton/config/stable/config.zip"
+	url := "https://dl.paesacybersecurity.eu/krypton/config/config.zip"
 	path := "C:/Program Files/Krypton/Updates/config.zip"
 	err = downloadToFile(url, path)
 	if err != nil {
@@ -117,7 +117,7 @@ func isWoW64() (bool, error) {
 }
 
 func updateExploitMitigations() error {
-	err := downloadToFile("https://dl.paesacybersecurity.eu/krypton/config/stable/Settings.xml",
+	err := downloadToFile("https://dl.paesacybersecurity.eu/krypton/config/Settings.xml",
 		"C:/Program Files/Krypton/Updates/Settings.xml")
 	if err != nil {
 		return err

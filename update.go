@@ -11,7 +11,7 @@ import (
 
 // update actualiza Krypton a la versión más reciente disponible en el servidor
 func update() error {
-	resp, err := http.Get("https://dl.paesacybersecurity.eu/krypton/stable/krypton.version")
+	resp, err := http.Get("https://dl.paesacybersecurity.eu/krypton/krypton.version")
 	if err != nil {
 		return err
 	}
@@ -30,8 +30,8 @@ func update() error {
 		return nil
 	}
 
-	url := "https://dl.paesacybersecurity.eu/krypton/stable/Krypton.exe"
-	path := "C:/Program Files/Krypton/Updates/Krypton.exe"
+	url := "https://dl.paesacybersecurity.eu/krypton/krypton.exe"
+	path := "C:/Program Files/Krypton/Updates/krypton.exe"
 
 	os.Mkdir("C:/Program Files/Krypton/Updates", os.ModeDir)
 	err = downloadToFile(url, path)
