@@ -1,5 +1,5 @@
 VERSION:=$(shell git describe --tags --always --abbrev=0 --dirty="-dev")
-BUILDFLAGS:=-v -ldflags="-s -w"
+BUILDFLAGS:=-v -ldflags="-s -w -X main.Version=$(VERSION)"
 IMPORT_PATH:=github.com/milgradesec/krypton
 
 .PHONY: all
@@ -7,7 +7,7 @@ all: build
 
 .PHONY: build
 build:
-	go build $(BUILDFLAGS)
+	go build $(BUILDFLAGS) $(IMPORT_PATH)/cmd/krypton
 
 .PHONY: test
 test:

@@ -1,16 +1,15 @@
-package main
+package system
 
 import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"strings"
-	"syscall"
-	"unsafe"
+
+	"github.com/milgradesec/krypton/internal/shell"
 )
 
-func updateConfig(force bool) error {
+func UpdateConfig(force bool) error {
 	err := updateExploitMitigations()
 	if err != nil {
 		fmt.Printf("Error al actualizar la configuración contra exploits, %v\n", err)
@@ -60,7 +59,7 @@ func updateConfig(force bool) error {
 	}
 	for _, f := range files {
 		if strings.HasSuffix(f.Name(), ".ps1") {
-			err = runPowershellScript("./"+f.Name(),
+			err = shell.Run("./"+f.Name(),
 				"C:/Program Files/Krypton/Updates/config")
 			if err != nil {
 				fmt.Println(err)
@@ -83,7 +82,7 @@ func updateConfig(force bool) error {
 		}
 		for _, f := range files {
 			if strings.HasSuffix(f.Name(), ".ps1") {
-				err = runPowershellScript("./"+f.Name(),
+				err = shell.Run("./"+f.Name(),
 					"C:/Program Files/Krypton/Settings")
 				if err != nil {
 					fmt.Println(err)
@@ -94,28 +93,6 @@ func updateConfig(force bool) error {
 	return nil
 }
 
-func isWoW64() (bool, error) {
-	dll, err := syscall.LoadDLL("kernel32.dll")
-	if err != nil {
-		return false, err
-	}
-	defer dll.Release()
-
-	proc, err := dll.FindProc("IsWow64Process")
-	if err != nil {
-		return false, err
-	}
-
-	handle, err := syscall.GetCurrentProcess()
-	if err != nil {
-		return false, err
-	}
-
-	var result bool
-	_, _, _ = proc.Call(uintptr(handle), uintptr(unsafe.Pointer(&result)))
-	return result, nil
-}
-
 func updateExploitMitigations() error {
 	err := downloadToFile("https://dl.paesacybersecurity.eu/krypton/config/stable/Settings.xml",
 		"C:/Program Files/Krypton/Updates/Settings.xml")
@@ -123,7 +100,7 @@ func updateExploitMitigations() error {
 		return err
 	}
 
-	err = runPowershellScript("Set-ProcessMitigation -PolicyFilePath Settings.xml",
+	err = shell.Run("Set-ProcessMitigation -PolicyFilePath Settings.xml",
 		"C:/Program Files/Krypton/Updates")
 	if err != nil {
 		return err
@@ -137,34 +114,11 @@ func updateExploitMitigations() error {
 		return err
 	}
 
-	err = runPowershellScript("Set-ProcessMitigation -PolicyFilePath Settings.xml",
+	err = shell.Run("Set-ProcessMitigation -PolicyFilePath Settings.xml",
 		"C:/Program Files/Krypton/Settings")
 	if err != nil {
 		return err
 	}
 
-	return nil
-}
-
-func runPowershellScript(flags string, workingDir string) error {
-	var powershellPath string
-	wow64, err := isWoW64()
-	if err != nil {
-		return err
-	}
-
-	if wow64 {
-		powershellPath = "c:/windows/sysnative/WindowsPowerShell/v1.0/powershell.exe"
-	} else {
-		powershellPath = "powershell.exe"
-	}
-	cmd := exec.Command(powershellPath, "-ExecutionPolicy", "Bypass", flags)
-	if workingDir != "" {
-		cmd.Dir = workingDir
-	}
-
-	if err := cmd.Run(); err != nil {
-		return err
-	}
 	return nil
 }

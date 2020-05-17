@@ -1,4 +1,4 @@
-package main
+package system
 
 import (
 	"log"
@@ -54,21 +54,6 @@ func setLastUpdateWindowsVersion(buildNumber string) {
 	}
 	defer k.Close()
 	k.SetStringValue("lastBuildNumber", buildNumber)
-}
-
-func getWindowsPatchNumber() uint64 {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
-		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", registry.QUERY_VALUE)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer k.Close()
-
-	patchNumber, _, err := k.GetIntegerValue("UBR")
-	if err != nil {
-		log.Fatal(err)
-	}
-	return patchNumber
 }
 
 func getLastUpdateWindowsVersion() string {
