@@ -27,21 +27,21 @@ func UpdateConfig(force bool) error {
 	// Las actualizaciones semianuales de Windows modifican muchas
 	// configuraciones y hay que volver a instalar la configuración
 	// si cambia la versión de Windows
-	winver := getWindowsVersion()
+	/*winver := getWindowsVersion()
 	lwinver := getLastUpdateWindowsVersion()
 	if winver != lwinver {
 		setLastUpdateWindowsVersion(winver)
 		force = true
-	}
+	}*/
 
 	// Si se indica --force-update hay que aplicar la configuración
 	// ignorando si ya se aplicó anteriormente
 	if !force {
 		configUpdateHash := computeFileSHA1(path)
-		if configUpdateHash == getLastUpdateHash() {
+		/*if configUpdateHash == getLastUpdateHash() {
 			fmt.Println("No hay cambios de configuracion")
 			os.Exit(0)
-		}
+		}*/
 		fmt.Println("Hay nueva configuracion disponible")
 		setLastUpdateHash(configUpdateHash)
 	}
