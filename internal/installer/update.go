@@ -1,4 +1,4 @@
-package main
+package installer
 
 import (
 	"errors"
@@ -25,7 +25,7 @@ func update() error {
 	if err != nil {
 		return err
 	}
-	if string(v) == version {
+	if string(v) == "v2.3.2" {
 		fmt.Println("Krypton esta actualizado.")
 		return nil
 	}

@@ -1,6 +1,5 @@
 VERSION:=$(shell git describe --tags --always --dirty="-dev")
 BUILDFLAGS:=-v -ldflags="-s -w -X main.Version=$(VERSION)"
-SYSTEM:=
 IMPORT_PATH:=github.com/milgradesec/krypton
 
 .PHONY: all
@@ -11,6 +10,7 @@ build:
 	go build $(BUILDFLAGS) $(IMPORT_PATH)/cmd/krypton
 
 .PHONY: release
+.ONESHELL:
 release:
 	set CGO_ENABLED=0
 	set GOOS=windows

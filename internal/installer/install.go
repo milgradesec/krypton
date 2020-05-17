@@ -1,4 +1,4 @@
-package main
+package installer
 
 import (
 	"os"
@@ -8,7 +8,7 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
-func install() error {
+func Install() error {
 	_, err := os.Stat("C:/Program Files/Krypton")
 	if err != nil {
 		if os.IsNotExist(err) {
