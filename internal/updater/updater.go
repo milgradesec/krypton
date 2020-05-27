@@ -14,7 +14,7 @@ import (
 	"github.com/inconshreveable/go-update"
 )
 
-const baseURL = "https://dl.paesacybersecurity.eu/krypton/"
+const baseURL = "https://dl.paesa.es/krypton/"
 
 var ErrNotAvailable = errors.New("no update available")
 
@@ -78,7 +78,6 @@ func checkForUpdate(version string) (r Response, err error) {
 	if err != nil {
 		return r, err
 	}
-
 	return r, nil
 }
 
@@ -115,6 +114,5 @@ func (r Response) fetchUpdate() (*http.Response, error) {
 		resp.Body.Close()
 		return nil, errors.New("server responded with code: %s" + strconv.Itoa(resp.StatusCode))
 	}
-
 	return resp, nil
 }

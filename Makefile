@@ -20,3 +20,4 @@ lint:
 .PHONY: clean
 clean:
 	go clean
+	rm -f krypton.exe

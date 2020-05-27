@@ -9,6 +9,38 @@ import (
 	"github.com/milgradesec/krypton/internal/shell"
 )
 
+const baseURL = "https://dl.paesa.es/krypton/"
+
+func updateExploitMitigations() error {
+	err := downloadToFile(baseURL+"config/stable/Settings.xml",
+		"C:/Program Files/Krypton/Updates/Settings.xml")
+	if err != nil {
+		return err
+	}
+
+	err = shell.Run("Set-ProcessMitigation -PolicyFilePath Settings.xml",
+		"C:/Program Files/Krypton/Updates")
+	if err != nil {
+		return err
+	}
+
+	_, err = os.Stat("C:/Program Files/Krypton/Settings/Settings.xml")
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+
+	err = shell.Run("Set-ProcessMitigation -PolicyFilePath Settings.xml",
+		"C:/Program Files/Krypton/Settings")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func UpdateConfig(force bool) error {
 	err := updateExploitMitigations()
 	if err != nil {
@@ -17,38 +49,15 @@ func UpdateConfig(force bool) error {
 		fmt.Println("Actualizada configuracion contra exploits.")
 	}
 
-	url := "https://dl.paesacybersecurity.eu/krypton/config/stable/config.zip"
+	url := baseURL + "config/stable/config.zip"
 	path := "C:/Program Files/Krypton/Updates/config.zip"
 	err = downloadToFile(url, path)
 	if err != nil {
 		return err
 	}
 
-	// Las actualizaciones semianuales de Windows modifican muchas
-	// configuraciones y hay que volver a instalar la configuración
-	// si cambia la versión de Windows
-	/*winver := getWindowsVersion()
-	lwinver := getLastUpdateWindowsVersion()
-	if winver != lwinver {
-		setLastUpdateWindowsVersion(winver)
-		force = true
-	}*/
-
-	// Si se indica --force-update hay que aplicar la configuración
-	// ignorando si ya se aplicó anteriormente
-	if !force {
-		configUpdateHash := computeFileSHA1(path)
-		/*if configUpdateHash == getLastUpdateHash() {
-			fmt.Println("No hay cambios de configuracion")
-			os.Exit(0)
-		}*/
-		fmt.Println("Hay nueva configuracion disponible")
-		setLastUpdateHash(configUpdateHash)
-	}
-
-	// Descomprimir configuración
-	os.RemoveAll("C:\\Program Files\\Krypton\\Updates\\config")
-	err = unzip(path, "C:\\Program Files\\Krypton\\Updates")
+	os.RemoveAll("C:/Program Files/Krypton/Updates/config")
+	err = unzip(path, "C:/Program Files/Krypton/Updates")
 	if err != nil {
 		return err
 	}
@@ -90,35 +99,5 @@ func UpdateConfig(force bool) error {
 			}
 		}
 	}
-	return nil
-}
-
-func updateExploitMitigations() error {
-	err := downloadToFile("https://dl.paesacybersecurity.eu/krypton/config/stable/Settings.xml",
-		"C:/Program Files/Krypton/Updates/Settings.xml")
-	if err != nil {
-		return err
-	}
-
-	err = shell.Run("Set-ProcessMitigation -PolicyFilePath Settings.xml",
-		"C:/Program Files/Krypton/Updates")
-	if err != nil {
-		return err
-	}
-
-	_, err = os.Stat("C:/Program Files/Krypton/Settings/Settings.xml")
-	if err != nil {
-		if os.IsNotExist(err) {
-			return nil
-		}
-		return err
-	}
-
-	err = shell.Run("Set-ProcessMitigation -PolicyFilePath Settings.xml",
-		"C:/Program Files/Krypton/Settings")
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
