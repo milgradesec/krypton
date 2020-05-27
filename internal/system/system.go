@@ -5,8 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
-
-	"github.com/milgradesec/krypton/internal/shell"
 )
 
 const baseURL = "https://dl.paesa.es/krypton/"
@@ -18,7 +16,7 @@ func updateExploitMitigations() error {
 		return err
 	}
 
-	err = shell.Run("Set-ProcessMitigation -PolicyFilePath Settings.xml",
+	err = powerShellRun("Set-ProcessMitigation -PolicyFilePath Settings.xml",
 		"C:/Program Files/Krypton/Updates")
 	if err != nil {
 		return err
@@ -32,7 +30,7 @@ func updateExploitMitigations() error {
 		return err
 	}
 
-	err = shell.Run("Set-ProcessMitigation -PolicyFilePath Settings.xml",
+	err = powerShellRun("Set-ProcessMitigation -PolicyFilePath Settings.xml",
 		"C:/Program Files/Krypton/Settings")
 	if err != nil {
 		return err
@@ -49,31 +47,17 @@ func UpdateConfig(force bool) error {
 		fmt.Println("Actualizada configuracion contra exploits.")
 	}
 
-	url := baseURL + "config/stable/config.zip"
-	path := "C:/Program Files/Krypton/Updates/config.zip"
+	url := baseURL + "configurarWindows10.ps1"
+	path := "C:/Program Files/Krypton/Updates/configurarWindows10.ps1"
 	err = downloadToFile(url, path)
 	if err != nil {
 		return err
 	}
 
-	os.RemoveAll("C:/Program Files/Krypton/Updates/config")
-	err = unzip(path, "C:/Program Files/Krypton/Updates")
+	err = powerShellRun("./configurarWindows10.ps1",
+		"C:/Program Files/Krypton/Updates")
 	if err != nil {
-		return err
-	}
-
-	files, err := ioutil.ReadDir("C:/Program Files/Krypton/Updates/config")
-	if err != nil {
-		return err
-	}
-	for _, f := range files {
-		if strings.HasSuffix(f.Name(), ".ps1") {
-			err = shell.Run("./"+f.Name(),
-				"C:/Program Files/Krypton/Updates/config")
-			if err != nil {
-				fmt.Println(err)
-			}
-		}
+		fmt.Println(err)
 	}
 
 	dir, err := os.Stat("C:/Program Files/Krypton/Settings")
@@ -91,7 +75,7 @@ func UpdateConfig(force bool) error {
 		}
 		for _, f := range files {
 			if strings.HasSuffix(f.Name(), ".ps1") {
-				err = shell.Run("./"+f.Name(),
+				err = powerShellRun("./"+f.Name(),
 					"C:/Program Files/Krypton/Settings")
 				if err != nil {
 					fmt.Println(err)

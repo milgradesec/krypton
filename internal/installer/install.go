@@ -9,21 +9,12 @@ import (
 func Install() error {
 	err := os.Mkdir("C:/Program Files/Krypton", os.ModeDir)
 	if err != nil {
-		if os.IsExist(err) {
-			return nil
+		if !os.IsExist(err) {
+			return err
 		}
-		return err
 	}
 
-	err = os.Mkdir("C:/Program Files/Krypton/Settings", os.ModeDir)
-	if err != nil {
-		return err
-	}
-
-	err = os.Mkdir("C:/Program Files/Krypton/Updates", os.ModeDir)
-	if err != nil {
-		return err
-	}
+	os.Mkdir("C:/Program Files/Krypton/Updates", os.ModeDir) //nolint
 
 	exe, err := os.Executable()
 	if err != nil {

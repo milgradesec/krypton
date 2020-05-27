@@ -73,7 +73,7 @@ linters:
     - golint
     - gomnd
     - goprintffuncname
-    - gosec
+    #- gosec
     - gosimple
     - govet
     - ineffassign

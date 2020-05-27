@@ -12,8 +12,6 @@ import (
 )
 
 func main() {
-	fmt.Println("Krypton " + Version)
-
 	var (
 		versionFlag     = flag.Bool("version", false, "Show version information")
 		installFlag     = flag.Bool("install", false, "Instala Krypton en el sistema")
@@ -30,6 +28,7 @@ func main() {
 	}
 
 	if *versionFlag {
+		fmt.Println("Krypton " + Version)
 		fmt.Printf("%s/%s, %s, %s\n", runtime.GOOS, runtime.GOARCH, runtime.Version(), Version)
 	}
 
