@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"time"
 )
 
 func Install() error {
@@ -15,6 +16,9 @@ func Install() error {
 	}
 
 	os.Mkdir("C:/Program Files/Krypton/Updates", os.ModeDir) //nolint
+
+	// workaround
+	time.Sleep(3 * time.Second) //nolint
 
 	exe, err := os.Executable()
 	if err != nil {

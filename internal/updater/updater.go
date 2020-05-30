@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/http"
 	"runtime"
-	"strconv"
 	"time"
 
 	"github.com/inconshreveable/go-update"
@@ -22,19 +21,19 @@ func Update(version string) error {
 	resp, err := checkForUpdate(version)
 	if err != nil {
 		if errors.Is(err, ErrNotAvailable) {
-			fmt.Println("No hay actualizaciones disponibles.")
+			fmt.Println("Krypton is up to date.")
 			return nil
 		}
 		return err
 	}
 
-	fmt.Printf("Nueva versión %s disponible.\n", resp.ReleaseVersion)
+	fmt.Printf("New version %s is available.\n", resp.ReleaseVersion)
 	err = resp.Apply()
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Actualizado a la versión %s.\n", resp.ReleaseVersion)
+	fmt.Printf("Updating Krypton to %s.\n", resp.ReleaseVersion)
 	return nil
 }
 
@@ -60,7 +59,7 @@ func checkForUpdate(version string) (r Response, err error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return r, fmt.Errorf("server responded with status code %s", resp.Status)
+		return r, fmt.Errorf("server responded with %s to request %s", resp.Status, resp.Request.URL)
 	}
 
 	var serverResp serverResponse
@@ -105,14 +104,14 @@ func (r Response) fetchUpdate() (*http.Response, error) {
 		Timeout: 15 * time.Second,
 	}
 
-	resp, err := client.Get(baseURL + r.ReleaseVersion + "/" + runtime.GOOS + "-" + runtime.GOARCH)
+	resp, err := client.Get(baseURL + r.ReleaseVersion + "/" + runtime.GOOS + "_" + runtime.GOARCH)
 	if err != nil {
 		return nil, err
 	}
 
 	if resp.StatusCode != http.StatusOK {
 		resp.Body.Close()
-		return nil, errors.New("server responded with code: %s" + strconv.Itoa(resp.StatusCode))
+		return nil, fmt.Errorf("server responded with %s to request %s", resp.Status, resp.Request.URL)
 	}
 	return resp, nil
 }

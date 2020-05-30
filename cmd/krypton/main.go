@@ -13,12 +13,12 @@ import (
 
 func main() {
 	var (
-		versionFlag     = flag.Bool("version", false, "Show version information")
-		installFlag     = flag.Bool("install", false, "Instala Krypton en el sistema")
-		updateFlag      = flag.Bool("update", false, "Actualiza la configuración de seguridad si hay cambios")
-		forceUpdateFlag = flag.Bool("force-update", false, "Actualiza la configuración de seguridad")
-		upgradeFlag     = flag.Bool("upgrade", false, "Actualiza Krypton a la ultima versión")
-		helpFlag        = flag.Bool("help", false, "Muestra los comandos disponibles")
+		versionFlag     = flag.Bool("version", false, "Show version information.")
+		installFlag     = flag.Bool("install", false, "Install Krypton.")
+		updateFlag      = flag.Bool("update", false, "Apply latest system configuration from remote server.")
+		forceUpdateFlag = flag.Bool("force-update", false, "Force system configuration update.")
+		upgradeFlag     = flag.Bool("upgrade", false, "Updates Krypton to latest version available.")
+		helpFlag        = flag.Bool("help", false, "Show all commands.")
 	)
 	flag.Parse()
 
@@ -35,28 +35,28 @@ func main() {
 	if *installFlag {
 		err := installer.Install()
 		if err != nil {
-			fmt.Printf("Error instalando Krypton: %v\n", err)
+			fmt.Printf("Error: install failed: %v\n", err)
 		}
 	}
 
 	if *updateFlag {
 		err := system.UpdateConfig(false)
 		if err != nil {
-			fmt.Printf("Error actualizando configuración: %v\n", err)
+			fmt.Printf("Error: system settings update failed: %v\n", err)
 		}
 	}
 
 	if *forceUpdateFlag {
 		err := system.UpdateConfig(true)
 		if err != nil {
-			fmt.Printf("Error actualizando configuración: %v\n", err)
+			fmt.Printf("Error: system settings update failed: %v\n", err)
 		}
 	}
 
 	if *upgradeFlag {
 		err := updater.Update(Version)
 		if err != nil {
-			fmt.Printf("Error actualizando Krypton: %v\n", err)
+			fmt.Printf("Error: update failed: %v\n", err)
 		}
 	}
 

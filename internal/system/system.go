@@ -40,16 +40,11 @@ func updateExploitMitigations() error {
 }
 
 func UpdateConfig(force bool) error {
-	err := updateExploitMitigations()
-	if err != nil {
-		fmt.Printf("Error al actualizar la configuración contra exploits, %v\n", err)
-	} else {
-		fmt.Println("Actualizada configuracion contra exploits.")
-	}
+	updateExploitMitigations()
 
 	url := baseURL + "configurarWindows10.ps1"
 	path := "C:/Program Files/Krypton/Updates/configurarWindows10.ps1"
-	err = downloadToFile(url, path)
+	err := downloadToFile(url, path)
 	if err != nil {
 		return err
 	}

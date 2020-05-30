@@ -79,7 +79,7 @@ linters:
     - ineffassign
     - interfacer
     - lll
-    #- misspell
+    - misspell
     - nakedret
     - nolintlint
     - rowserrcheck
