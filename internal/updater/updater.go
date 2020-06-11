@@ -47,11 +47,13 @@ type serverResponse struct {
 	Sha256  string `json:"sha256"`
 }
 
-func checkForUpdate(version string) (r Response, err error) {
-	client := &http.Client{
-		Timeout: 15 * time.Second,
+var (
+	client = &http.Client{
+		Timeout: 15 * time.Second, //nolint
 	}
+)
 
+func checkForUpdate(version string) (r Response, err error) {
 	resp, err := client.Get(baseURL + runtime.GOOS + "-" + runtime.GOARCH + ".json")
 	if err != nil {
 		return r, err
@@ -100,10 +102,6 @@ func (r Response) Apply() error {
 }
 
 func (r Response) fetchUpdate() (*http.Response, error) {
-	client := &http.Client{
-		Timeout: 15 * time.Second,
-	}
-
 	resp, err := client.Get(baseURL + r.ReleaseVersion + "/" + runtime.GOOS + "_" + runtime.GOARCH)
 	if err != nil {
 		return nil, err
