@@ -27,19 +27,19 @@ func Update(version string) error {
 		return err
 	}
 
-	fmt.Printf("New version %s is available.\n", resp.ReleaseVersion)
+	fmt.Printf("New version %s is available.\n", resp.Version)
 	err = resp.Apply()
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Updating Krypton to %s.\n", resp.ReleaseVersion)
+	fmt.Printf("Updating Krypton to %s.\n", resp.Version)
 	return nil
 }
 
-type Response struct {
-	ReleaseVersion string
-	checksum       []byte
+type Release struct {
+	Version  string
+	checksum []byte
 }
 
 type serverResponse struct {
@@ -53,7 +53,7 @@ var (
 	}
 )
 
-func checkForUpdate(version string) (r Response, err error) {
+func checkForUpdate(version string) (r Release, err error) {
 	resp, err := client.Get(baseURL + runtime.GOOS + "-" + runtime.GOARCH + ".json")
 	if err != nil {
 		return r, err
@@ -74,7 +74,7 @@ func checkForUpdate(version string) (r Response, err error) {
 		return r, ErrNotAvailable
 	}
 
-	r.ReleaseVersion = serverResp.Version
+	r.Version = serverResp.Version
 	r.checksum, err = hex.DecodeString(serverResp.Sha256)
 	if err != nil {
 		return r, err
@@ -82,7 +82,7 @@ func checkForUpdate(version string) (r Response, err error) {
 	return r, nil
 }
 
-func (r Response) Apply() error {
+func (r Release) Apply() error {
 	opts := update.Options{
 		Checksum: r.checksum,
 		Hash:     crypto.SHA256,
@@ -101,8 +101,8 @@ func (r Response) Apply() error {
 	return nil
 }
 
-func (r Response) fetchUpdate() (*http.Response, error) {
-	resp, err := client.Get(baseURL + r.ReleaseVersion + "/" + runtime.GOOS + "_" + runtime.GOARCH)
+func (r Release) fetchUpdate() (*http.Response, error) {
+	resp, err := client.Get(baseURL + r.Version + "/" + runtime.GOOS + "_" + runtime.GOARCH)
 	if err != nil {
 		return nil, err
 	}
